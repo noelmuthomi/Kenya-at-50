@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>Kenya at 50 — Premium Edition</title>
+<title>Kenya at 50</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
 
@@ -69,7 +69,7 @@ body * { font-size: calc(1rem * var(--font-scale)); }
   -webkit-backdrop-filter: blur(30px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Ensures even distribution across vertical space */
+  justify-content: space-between; 
   gap: 16px;
   animation: viewFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -114,7 +114,7 @@ body * { font-size: calc(1rem * var(--font-scale)); }
 }
 .db-status { font-size: 0.78rem !important; color: var(--muted); text-align: center; margin-top: 2px; }
 
-/* Premium Save & Resume System Cards */
+/* Saved Game Recovery Card */
 .resume-card {
   background: linear-gradient(135deg, rgba(244, 164, 96, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
   border: 1px solid rgba(244, 164, 96, 0.2);
@@ -128,7 +128,7 @@ body * { font-size: calc(1rem * var(--font-scale)); }
 .resume-title { font-weight: 700; color: var(--kenya-gold); font-size: 0.95rem !important; display: flex; align-items: center; gap: 8px; }
 .resume-details { font-size: 0.85rem !important; color: #ced6e0; line-height: 1.4; }
 
-/* Interactive Setup Config Flow */
+/* Setup Layout Form */
 .setup-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; width: 100%; }
 .teams { display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto; padding-right: 4px; }
 .teams::-webkit-scrollbar { width: 4px; }
@@ -149,7 +149,7 @@ body * { font-size: calc(1rem * var(--font-scale)); }
 }
 .team-input:focus { border-color: var(--kenya-gold); background: rgba(0, 0, 0, 0.6); box-shadow: 0 0 15px rgba(244, 164, 96, 0.15); }
 
-/* Premium High-End Buttons */
+/* Interface Buttons */
 .btn {
   padding: 15px 22px; 
   border-radius: var(--radius-md); 
@@ -171,7 +171,7 @@ body * { font-size: calc(1rem * var(--font-scale)); }
 .btn-compact { width: 46px; height: 46px; padding: 0; border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.04); color: #ff7675; font-size: 1.1rem !important; flex-shrink: 0; }
 .btn-icon { background: rgba(255,255,255,0.04); width: 44px; height: 44px; border-radius: 50%; padding: 0; border: 1px solid var(--border-glow); }
 
-/* Top Game Session Dash */
+/* Top Game Bar Dynamic Stats */
 .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px; }
 .round { color: var(--kenya-gold); font-weight: 700; font-size: 1.1rem !important; letter-spacing: 0.5px; }
 .scoreboard { display: flex; gap: 8px; overflow-x: auto; max-width: 70%; justify-content: flex-end; }
@@ -191,12 +191,12 @@ body * { font-size: calc(1rem * var(--font-scale)); }
 }
 .score-chip .pts { color: var(--kenya-gold); font-weight: 700; }
 
-/* Reconstructed Beautiful Aesthetic Single-Column Architecture */
+/* Single Column Word List Grid */
 .words-card-vertical { 
-  flex: 1; /* Instructs layout to devour all structural space down the display panel */
+  flex: 1; 
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Perfectly spreads out items to avoid ugly gaps */
+  justify-content: space-between; 
   gap: 8px;
   width: 100%;
   margin: 14px 0;
@@ -206,7 +206,7 @@ body * { font-size: calc(1rem * var(--font-scale)); }
   align-items: center; 
   gap: 14px; 
   padding: 0 16px; 
-  height: calc((100% / 10) - 8px); /* Ensures perfectly balanced distribution across all sizes */
+  height: calc((100% / 10) - 8px); 
   min-height: 44px;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.94);
@@ -224,14 +224,14 @@ body * { font-size: calc(1rem * var(--font-scale)); }
 
 .check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #a0aec0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; transition: all 0.2s ease; }
 
-/* Dynamic Full Checked Row State Transforms */
+/* Checked State Dynamic Styles */
 .word-row.checked { background: #006B3F !important; border-color: #008f54; box-shadow: 0 4px 20px rgba(0, 107, 63, 0.3); }
 .word-row.checked .word-label { text-decoration: line-through; color: rgba(255,255,255,0.85); }
 .word-row.checked .check { background: #fff; border-color: #fff; }
 .word-row.checked .check svg { stroke: var(--kenya-green) !important; }
 .word-row.checked .badge { border-color: rgba(255,255,255,0.4); color: #fff; background: rgba(255,255,255,0.1); }
 
-/* Dynamic Header Timer System */
+/* Game Timer */
 .timer-container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
 .timer { 
   font-weight: 700; 
@@ -243,7 +243,7 @@ body * { font-size: calc(1rem * var(--font-scale)); }
   box-shadow: 0 6px 20px rgba(206, 11, 38, 0.25);
 }
 
-/* Modals Overlay Architecture */
+/* Modal Popup Core Styles */
 .overlay {
   position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 200;
   background: rgba(5, 7, 12, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -262,7 +262,7 @@ body * { font-size: calc(1rem * var(--font-scale)); }
   padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 20px;
 }
 
-/* Flag Accent Top Ribbon Line */
+/* Flag Decorative Line Strip */
 .flag-accent { display: flex; height: 4px; width: 100%; border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
 .flag-accent div { flex: 1; }
 
@@ -282,36 +282,36 @@ body * { font-size: calc(1rem * var(--font-scale)); }
         <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
           <div style="width:44px;"></div>
           <div class="logo">
-            <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop&crop=faces" alt="Flag Logo Icon" />
+            <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop&crop=faces" alt="Game Logo" />
           </div>
-          <button class="btn btn-icon" id="btn-open-settings" title="System Theme Setup Settings">
+          <button class="btn btn-icon" id="btn-open-settings" title="Open Settings">
             <svg viewBox="0 0 24 24" width="22" height="22" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
           </button>
         </div>
         <div class="title">KENYA AT <span>50</span></div>
         <div class="subtitle">Party Word Game</div>
-        <div class="db-status" id="db-status-text">Warming core modules...</div>
+        <div class="db-status" id="db-status-text">Loading words...</div>
       </div>
 
       <div class="resume-card" id="resume-container" style="display: none;">
         <div class="resume-title">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--kenya-gold)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-          Saved Session Recovered
+          Saved Game Found
         </div>
-        <div class="resume-details" id="resume-summary-text">Waking state metadata summaries...</div>
-        <button class="btn btn-primary" id="btn-resume-action" style="padding: 10px 16px; font-size: 0.9rem !important; background: linear-gradient(135deg, var(--kenya-gold), #c97f18); box-shadow: none;">Resume Game State</button>
+        <div class="resume-details" id="resume-summary-text">Loading saved game details...</div>
+        <button class="btn var-btn-resume" id="btn-resume-action" style="padding: 10px 16px; font-size: 0.9rem !important; background: linear-gradient(135deg, var(--kenya-gold), #c97f18); box-shadow: none;">Resume Game</button>
       </div>
 
       <div class="setup-body">
         <div class="teams" id="team-inputs-container"></div>
-        <button class="btn btn-ghost" id="btn-add-team">➕ Incorporate Additional Team</button>
+        <button class="btn btn-ghost" id="btn-add-team">➕ Add Team</button>
       </div>
 
       <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
-        <button class="btn btn-primary" id="btn-start">Initiate Championship</button>
+        <button class="btn btn-primary" id="btn-start">Start Game</button>
         <div style="display:flex; gap:10px;">
-          <button class="btn btn-compact" id="btn-remove" title="Delete Last Team Profile">✕</button>
-          <button class="btn" id="btn-reset" style="background:transparent; border:1px solid rgba(255,255,255,0.08); color: #fff; flex: 1;">Purge Memory</button>
+          <button class="btn btn-compact" id="btn-remove" title="Remove Team">✕</button>
+          <button class="btn" id="btn-reset" style="background:transparent; border:1px solid rgba(255,255,255,0.08); color: #fff; flex: 1;">Clear Save</button>
         </div>
       </div>
     </aside>
@@ -326,12 +326,12 @@ body * { font-size: calc(1rem * var(--font-scale)); }
         <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; text-align:center; padding: 20px 0;">
           <div></div>
           <div style="display:flex; flex-direction:column; gap:14px;">
-            <h2 id="text-ready-team" style="font-size:1.9rem; font-weight:700;">Team Moja Turn</h2>
-            <p style="color:var(--muted); font-size: 0.95rem; line-height: 1.5; padding: 0 10px;">Hand over the mobile device dashboard to the current session describer. Fire the layout below when completely prepared.</p>
+            <h2 id="text-ready-team" style="font-size:1.9rem; font-weight:700;">Team Moja's Turn</h2>
+            <p style="color:var(--muted); font-size: 0.95rem; line-height: 1.5; padding: 0 10px;">Pass the phone to the next player. Tap below when you are ready to start!</p>
           </div>
           <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
-            <button class="btn btn-primary" id="btn-reveal">Reveal Spaced Layout Grid</button>
-            <button class="btn" id="btn-quit" style="background:transparent; border:1px solid rgba(255,255,255,0.06); color:#ff7675;">Terminate Match</button>
+            <button class="btn btn-primary" id="btn-reveal">Start Turn</button>
+            <button class="btn" id="btn-quit" style="background:transparent; border:1px solid rgba(255,255,255,0.06); color:#ff7675;">End Game</button>
           </div>
         </div>
       </section>
@@ -339,14 +339,14 @@ body * { font-size: calc(1rem * var(--font-scale)); }
       <section id="screen-play" class="screen">
         <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; width:100%;">
           <div class="timer-container">
-            <div style="font-weight:700; color:var(--kenya-gold); font-size: 1.3rem;" id="text-play-team">Active Team</div>
+            <div style="font-weight:700; color:var(--kenya-gold); font-size: 1.3rem;" id="text-play-team">Playing Team</div>
             <div class="timer" id="text-play-timer">00:50</div>
           </div>
 
           <div class="words-card-vertical" id="list-game-words"></div>
 
           <div style="display:flex; gap:12px; width:100%;">
-            <button class="btn btn-danger" id="btn-stop" style="flex:1.2;">Stop Turn Clock</button>
+            <button class="btn btn-danger" id="btn-stop" style="flex:1.2;">End Turn</button>
             <button class="btn" id="btn-skip" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; flex:1;">Skip Word</button>
           </div>
         </div>
@@ -355,10 +355,10 @@ body * { font-size: calc(1rem * var(--font-scale)); }
       <section id="screen-scoreboard" class="screen">
         <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; width:100%;">
           <div style="display:flex; flex-direction:column; gap:14px; flex:1; justify-content:center;">
-            <h3 style="color:var(--kenya-gold); font-size:1.3rem; font-weight: 700; text-align:center;">Current Championship Matrix</h3>
+            <h3 style="color:var(--kenya-gold); font-size:1.3rem; font-weight: 700; text-align:center;">Scoreboard</h3>
             <div id="scoreboard-list" style="display:flex; flex-direction:column; gap:10px; width:100%;"></div>
           </div>
-          <button class="btn btn-primary" id="btn-next-turn" style="width:100%;">Trigger Next Turn Sequence</button>
+          <button class="btn btn-primary" id="btn-next-turn" style="width:100%;">Next Turn</button>
         </div>
       </section>
     </main>
@@ -368,41 +368,41 @@ body * { font-size: calc(1rem * var(--font-scale)); }
 
 <div class="overlay" id="modal-settings">
   <div class="overlay-card">
-    <div class="overlay-title" style="color: var(--kenya-gold);">PREFERENCES</div>
-    <div class="overlay-sub" style="color: #fff; font-size: 1rem;">Scale Global Display Sizing</div>
+    <div class="overlay-title" style="color: var(--kenya-gold);">Settings</div>
+    <div class="overlay-sub" style="color: #fff; font-size: 1rem;">Change Text Size</div>
     
     <div class="settings-row">
-      <span style="font-weight: 500;">Typography Sizing</span>
+      <span style="font-weight: 500;">Font Size</span>
       <div style="display: flex; gap: 10px;">
         <button class="btn btn-compact" id="btn-font-dec" style="background: rgba(255,255,255,0.06); color:#fff;">A-</button>
         <button class="btn btn-compact" id="btn-font-inc" style="background: rgba(255,255,255,0.06); color:#fff;">A+</button>
       </div>
     </div>
-    <button class="btn btn-primary" id="btn-close-settings">Apply Matrix Scales</button>
+    <button class="btn btn-primary" id="btn-close-settings">Save Settings</button>
   </div>
 </div>
 
 <div class="overlay" id="modal-times-up">
   <div class="overlay-card">
-    <div class="overlay-title">INTERVAL EXPIRY</div>
-    <div class="overlay-sub">Points Secured: <span id="text-gained-pts" style="color:var(--kenya-gold); font-weight:700;">0</span></div>
+    <div class="overlay-title">Time's Up!</div>
+    <div class="overlay-sub">Points Scored: <span id="text-gained-pts" style="color:var(--kenya-gold); font-weight:700;">0</span></div>
     <div style="display:flex; flex-direction:column; gap:10px;">
-      <button class="btn btn-primary" id="btn-view-scores">Display Standings Dashboard</button>
-      <button class="btn" id="btn-continue" style="background:transparent; color:var(--muted);">Expedited Step Continue</button>
+      <button class="btn btn-primary" id="btn-view-scores">See Scores</button>
+      <button class="btn" id="btn-continue" style="background:transparent; color:var(--muted);">Next Turn</button>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="modal-winner">
   <div class="overlay-card">
-    <div class="overlay-title" style="color:var(--kenya-gold)">TOURNAMENT VICTOR</div>
+    <div class="overlay-title" style="color:var(--kenya-gold)">Winner!</div>
     <div class="overlay-sub" id="text-winner-team" style="font-size:1.6rem !important; font-weight:700;">Team Name</div>
-    <button class="btn btn-primary" id="btn-new-tournament">Reinitialize Tournament</button>
+    <button class="btn btn-primary" id="btn-new-tournament">Play Again</button>
   </div>
 </div>
 
 <script>
-// High Fidelity Fallback Database Pool
+// Local Fallback Words Dataset Matrix
 let WORLD_POOL = [
   {"w": "Jackal", "pts": 10}, {"w": "Cheetah", "pts": 10}, {"w": "Sykes Monkey", "pts": 10}, {"w": "Honey Badger", "pts": 10}, 
   {"w": "Marabou Stork", "pts": 10}, {"w": "Mongoose", "pts": 10}, {"w": "Cobra", "pts": 10}, {"w": "Mamba", "pts": 10}, 
@@ -431,7 +431,7 @@ const runtime = {
   currentView: 'setup'
 };
 
-/* -- LOCAL STORAGE GAME RESUMPTION PRESETS ENGINE -- */
+/* -- STORAGE STATE ENGINE -- */
 function saveGameState() {
   const payload = {
     teamsList: runtime.teamsList,
@@ -450,7 +450,7 @@ function checkSavedGameSlot() {
     try {
       const data = JSON.parse(saved);
       if (data.teamsList && data.teamsList.length > 0) {
-        document.getElementById('resume-summary-text').innerText = `Round ${data.currentRoundNumber} • ${data.teamsList.length} Active Teams • Next: ${data.teamsList[data.activeTeamPointer].name}`;
+        document.getElementById('resume-summary-text').innerText = `Round ${data.currentRoundNumber} • ${data.teamsList.length} Teams Loaded • Next up: ${data.teamsList[data.activeTeamPointer].name}`;
         container.style.display = 'flex';
         return;
       }
@@ -473,21 +473,21 @@ function executeResumeMatch() {
   displayScreen('screen-scoreboard');
 }
 
-/* -- DATA RECORD SYNC PROVISION -- */
+/* -- DATABASE INTEGRATION LOGIC -- */
 async function loadDatabase(){
   try {
     const res = await fetch('words.json');
     if(!res.ok) throw new Error();
     const remoteData = await res.json();
     if(remoteData && remoteData.length > 0) WORLD_POOL = remoteData;
-    document.getElementById('db-status-text').innerText = `System Data Sync Live: ${WORLD_POOL.length} Entries`;
+    document.getElementById('db-status-text').innerText = `Words Connected: ${WORLD_POOL.length} Entries`;
   } catch(e) {
-    document.getElementById('db-status-text').innerText = `Local Database Engine Active (${WORLD_POOL.length} records).`;
+    document.getElementById('db-status-text').innerText = `Words Loaded (${WORLD_POOL.length})`;
   } 
   renderScoreboardChips();
 }
 
-/* -- BULLETPROOF MULTI-LAYER BACK BUTTON CONTROL -- */
+/* -- BACK BUTTON NAVIGATION CONFIG -- */
 function displayScreen(viewId) {
   runtime.currentView = viewId;
   const setupPanel = document.getElementById('panel-setup');
@@ -520,7 +520,7 @@ window.addEventListener('popstate', (event) => {
     const targetView = event.state.view;
     if (targetView === 'setup') {
       if (runtime.isCurrentlyPlaying) {
-        if (confirm("Match countdown is live! Forfeit current turn execution and navigate back to main options layout?")) {
+        if (confirm("Match is live! Quit current turn and go back to settings?")) {
           clearInterval(runtime.countdownTracker);
           runtime.isCurrentlyPlaying = false;
           displayScreen('setup');
@@ -538,7 +538,7 @@ window.addEventListener('popstate', (event) => {
   }
 });
 
-/* Dynamic Panel Rendering Utilities */
+/* Dynamic UI Creation Builders */
 function drawSetupForm(){
   const container = document.getElementById('team-inputs-container');
   container.innerHTML = '';
@@ -588,7 +588,7 @@ function renderScoreboardChips(){
   } 
 }
 
-/* System Dynamic Scale Engine Configurations */
+/* Screen Sizing Scaler Systems */
 document.getElementById('btn-open-settings').addEventListener('click', () => showOverlay('modal-settings'));
 document.getElementById('btn-close-settings').addEventListener('click', () => closeOverlay('modal-settings'));
 document.getElementById('btn-font-dec').addEventListener('click', () => updateFontScale(-0.05));
@@ -601,7 +601,7 @@ function updateFontScale(delta) {
   root.style.setProperty('--font-scale', nextScale);
 }
 
-/* Standard Control Wire Events */
+/* Event Handlers Setup Wires */
 document.getElementById('btn-add-team').addEventListener('click', ()=>{
   if(runtime.teamsList.length < 6) runtime.teamsList.push({name:`Team ${runtime.teamsList.length + 1}`, score:0});
   drawSetupForm(); renderScoreboardChips(); saveGameState();
@@ -611,7 +611,7 @@ document.getElementById('btn-remove').addEventListener('click', ()=>{
   drawSetupForm(); renderScoreboardChips(); saveGameState();
 });
 document.getElementById('btn-reset').addEventListener('click', ()=>{
-  if(confirm('Wipe out all stored state data and tournament records permanently?')){ 
+  if(confirm('Permanently clear all scores and game memory?')){ 
     localStorage.removeItem('kenya_50_saved_game');
     runtime.teamsList = [{name:'Team Moja', score:0}, {name:'Team Mbili', score:0}]; 
     runtime.activeTeamPointer = 0; 
@@ -627,7 +627,7 @@ document.getElementById('btn-start').addEventListener('click', () => {
 document.getElementById('btn-next-turn').addEventListener('click', goToReadyScreen);
 document.getElementById('btn-reveal').addEventListener('click', () => triggerPlayPhase());
 document.getElementById('btn-quit').addEventListener('click', () => { 
-  if(confirm('Return to settings portal dashboard? State data is secured.')) { displayScreen('setup'); }
+  if(confirm('Return to main menu? Your game progress is saved.')) { displayScreen('setup'); }
 });
 document.getElementById('btn-stop').addEventListener('click', () => handleRoundTimeout());
 document.getElementById('btn-skip').addEventListener('click', () => {
@@ -638,10 +638,10 @@ document.getElementById('btn-skip').addEventListener('click', () => {
 });
 
 document.getElementById('btn-view-scores').addEventListener('click', ()=>{
-  closeOverlay('modal-times-up'); displayScreen('screen-scoreboard'); renderScoreboardChips();
+  closeOverlay('modal-times-up'); renderScoreboardChips(); displayScreen('screen-scoreboard');
 });
 document.getElementById('btn-continue').addEventListener('click', () => { 
-  closeOverlay('modal-times-up'); proceedToNextTurn(); 
+  closeOverlay('modal-times-up'); goToReadyScreen(); 
 });
 document.getElementById('btn-new-tournament').addEventListener('click', () => {
   closeOverlay('modal-winner');
@@ -715,31 +715,32 @@ function processToggleInput(index, uiElement){
   }
 }
 
+/* FIX: Alternating Turn Logic Matrix Reset Execution */
 function handleRoundTimeout(){
   runtime.isCurrentlyPlaying = false; 
   clearInterval(runtime.countdownTracker);
+  
+  // Calculate and add scores to the active team
   const totalGained = runtime.activeWordsSet.filter(w => w.checked).reduce((s, w) => s + w.pts, 0);
   document.getElementById('text-gained-pts').innerText = totalGained;
   runtime.teamsList[runtime.activeTeamPointer].score += totalGained;
-  saveGameState();
-  showOverlay('modal-times-up');
-}
-
-function proceedToNextTurn(){
-  closeOverlay('modal-times-up');
+  
+  // Check win threshold immediately for current team before advancing pointer
   if(runtime.teamsList[runtime.activeTeamPointer].score >= 500){
     document.getElementById('text-winner-team').innerText = runtime.teamsList[runtime.activeTeamPointer].name;
     showOverlay('modal-winner'); 
     return;
-  } 
+  }
+  
+  // Advance the turn pointer to the next team reliably right here
   runtime.activeTeamPointer++;
   if(runtime.activeTeamPointer >= runtime.teamsList.length){ 
     runtime.activeTeamPointer = 0; 
     runtime.currentRoundNumber++; 
   }
+  
   saveGameState();
-  renderScoreboardChips();
-  displayScreen('screen-scoreboard');
+  showOverlay('modal-times-up');
 }
 
 function showOverlay(id){
@@ -749,7 +750,7 @@ function closeOverlay(id){
   const el = document.getElementById(id); if(el) el.classList.remove('show');
 }
 
-// System Boot Bootstrap Init
+// System Boot Init
 drawSetupForm(); 
 loadDatabase();
 checkSavedGameSlot();
