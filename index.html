@@ -2,684 +2,234 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Kenya at 50 — Word Party Game</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --red:    #C8102E;
-    --green:  #006600;
-    --black:  #000000;
-    --gold:   #E6A817;
-    --cream:  #FDF6E3;
-    --white:  #FFFFFF;
-    --shadow: 0 4px 24px rgba(0,0,0,0.18);
-    --radius: 18px;
+    --red: #C8102E; --green: #006600; --black: #121212; --gold: #E6A817; 
+    --bg-dark: #1a1a1a; --card-bg: #242424; --white: #FFFFFF;
   }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+  input { user-select: text; }
+  
+  body { font-family: 'Ubuntu', sans-serif; background: var(--bg-dark); color: var(--white); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+  
+  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity 0.3s; overflow-y: auto; padding-bottom: 20px; }
+  .screen.active { opacity: 1; pointer-events: all; z-index: 10; background: var(--bg-dark); }
+  
+  .header { text-align: center; padding: 30px 20px 15px; background: var(--black); border-bottom: 3px solid var(--red); }
+  .title { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; letter-spacing: 2px; line-height: 1; color: var(--white); }
+  .title span { color: var(--gold); }
+  .db-status { font-size: 0.8rem; color: #888; margin-top: 5px; }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .content { padding: 20px; max-width: 500px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 15px; }
+  
+  .btn { padding: 16px 20px; border-radius: 12px; border: none; font-family: 'Ubuntu', sans-serif; font-weight: 700; font-size: 1.1rem; cursor: pointer; text-align: center; width: 100%; transition: transform 0.1s; }
+  .btn:active { transform: scale(0.96); }
+  .btn-primary { background: linear-gradient(135deg, var(--red), #8B0000); color: white; box-shadow: 0 4px 15px rgba(200,16,46,0.4); }
+  .btn-success { background: linear-gradient(135deg, var(--green), #004d00); color: white; }
+  .btn-outline { background: transparent; border: 2px solid #444; color: #ccc; }
 
-  html, body {
-    height: 100%;
-    font-family: 'Nunito', sans-serif;
-    background: var(--black);
-    color: var(--cream);
-    overflow: hidden;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
+  .team-row { display: flex; gap: 10px; }
+  .team-input { flex: 1; padding: 15px; border-radius: 10px; border: 2px solid #333; background: var(--card-bg); color: white; font-family: 'Ubuntu', sans-serif; font-weight: 700; font-size: 1rem; }
+  .team-input:focus { border-color: var(--gold); outline: none; }
+  .btn-del { background: #333; color: #ff4444; border: none; border-radius: 10px; width: 50px; font-size: 1.2rem; cursor: pointer; }
 
-  .screen {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: flex-start;
-    padding: 0 0 24px;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.35s ease;
-    overflow-y: auto;
-  }
-  .screen.active { opacity: 1; pointer-events: all; }
+  .score-card { background: var(--card-bg); border-radius: 12px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--gold); margin-bottom: 10px; }
+  .score-name { font-size: 1.2rem; font-weight: 700; }
+  .score-pts { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--gold); line-height: 1; }
 
-  .header-band {
-    width: 100%;
-    background: linear-gradient(135deg, var(--red) 0%, #8B0000 100%);
-    padding: 24px 20px 20px;
-    text-align: center;
-    position: relative;
-    flex-shrink: 0;
-  }
-  .header-band::after {
-    content: '';
-    position: absolute; bottom: -14px; left: 0; right: 0;
-    height: 28px;
-    background: var(--black);
-    clip-path: ellipse(55% 100% at 50% 100%);
-  }
-  .flag-stripe {
-    display: flex; height: 5px; width: 80%; margin: 0 auto 12px;
-    border-radius: 3px; overflow: hidden;
-  }
-  .flag-stripe span { flex: 1; }
-  .flag-stripe span:nth-child(1) { background: var(--black); }
-  .flag-stripe span:nth-child(2) { background: var(--red); }
-  .flag-stripe span:nth-child(3) { background: var(--green); }
-  .flag-stripe span:nth-child(4) { background: var(--gold); }
+  .play-header { background: var(--black); padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; position: sticky; top: 0; z-index: 20; }
+  .timer-text { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--white); }
+  
+  .word-list { background: white; border-radius: 15px; overflow: hidden; margin-top: 10px; }
+  .word-row { display: flex; align-items: center; gap: 15px; padding: 18px 20px; border-bottom: 1px solid #eee; cursor: pointer; background: white; }
+  .word-row.checked { background: #f4fdf4; }
+  .word-radio { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; }
+  .word-row.checked .word-radio { background: var(--green); border-color: var(--green); }
+  .word-radio svg { width: 14px; height: 14px; fill: none; stroke: white; stroke-width: 3; opacity: 0; }
+  .word-row.checked .word-radio svg { opacity: 1; }
+  .word-text { flex: 1; font-size: 1.1rem; font-weight: 700; color: #222; }
+  .word-row.checked .word-text { color: #aaa; text-decoration: line-through; }
+  .word-pts { font-size: 0.85rem; font-weight: 700; color: var(--red); border: 1.5px solid var(--red); padding: 3px 10px; border-radius: 20px; }
 
-  .logo-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 3.4rem;
-    letter-spacing: 3px;
-    color: var(--white);
-    line-height: 1;
-    text-shadow: 0 3px 12px rgba(0,0,0,0.5);
-  }
-  .logo-sub {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-top: 4px;
-  }
-  .maasai-shield {
-    font-size: 2.4rem;
-    display: block;
-    margin-bottom: 4px;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
-  }
-
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 14px 28px;
-    border-radius: 50px;
-    border: none; cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 1rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    transition: transform 0.12s, box-shadow 0.12s;
-    -webkit-user-select: none; user-select: none;
-  }
-  .btn:active { transform: scale(0.95); }
-  .btn-red {
-    background: linear-gradient(135deg, var(--red), #8B0000);
-    color: var(--white);
-    box-shadow: 0 4px 18px rgba(200,16,46,0.45);
-  }
-  .btn-green {
-    background: linear-gradient(135deg, #00A020, var(--green));
-    color: var(--white);
-    box-shadow: 0 4px 18px rgba(0,100,0,0.45);
-  }
-  .btn-gold {
-    background: linear-gradient(135deg, #F5C842, var(--gold));
-    color: var(--black);
-    box-shadow: 0 4px 18px rgba(230,168,23,0.45);
-  }
-  .btn-ghost {
-    background: transparent;
-    color: var(--cream);
-    border: 2px solid rgba(255,255,255,0.25);
-  }
-  .btn-full { width: 100%; }
-  .btn-lg { font-size: 1.15rem; padding: 17px 32px; }
-  .btn-sm { font-size: 0.82rem; padding: 9px 18px; }
-
-  .card {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius);
-    padding: 18px;
-    width: calc(100% - 40px);
-    margin-top: 14px;
-    backdrop-filter: blur(6px);
-  }
-
-  #screen-home .content {
-    width: 100%; padding: 34px 20px 0;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-  }
-  #screen-home p {
-    text-align: center; font-size: 0.95rem; color: rgba(255,255,255,0.65);
-    line-height: 1.6; margin-bottom: 6px;
-  }
-  .how-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 10px; width: 100%;
-  }
-  .how-item {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 12px; padding: 12px;
-    text-align: center;
-  }
-  .how-item .icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
-  .how-item p { font-size: 0.78rem; color: rgba(255,255,255,0.7); margin: 0; }
-
-  #screen-setup .content {
-    width: 100%; padding: 34px 20px 0;
-    display: flex; flex-direction: column; gap: 14px;
-  }
-  .section-label {
-    font-size: 0.7rem; font-weight: 700; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--gold);
-    margin-bottom: 4px;
-  }
-  .team-row { display: flex; align-items: center; gap: 10px; }
-  .team-input {
-    flex: 1; background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15);
-    border-radius: 12px; padding: 12px 14px; color: var(--white); font-family: 'Nunito', sans-serif;
-    font-size: 0.95rem; font-weight: 700; outline: none; transition: border-color 0.2s;
-  }
-  .team-input:focus { border-color: var(--gold); }
-  .team-input::placeholder { color: rgba(255,255,255,0.3); }
-  .team-color-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
-  .add-team-btn {
-    width: 100%; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2);
-    border-radius: 12px; padding: 12px; color: rgba(255,255,255,0.5); font-family: 'Nunito', sans-serif; font-weight: 700;
-    font-size: 0.9rem; cursor: pointer; transition: border-color 0.2s, color 0.2s;
-  }
-  .add-team-btn:active { border-color: var(--gold); color: var(--gold); }
-
-  .goal-selector { display: flex; gap: 8px; flex-wrap: wrap; }
-  .goal-chip {
-    padding: 8px 16px; border-radius: 50px; border: 1.5px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.6); font-family: 'Nunito', sans-serif; font-weight: 700;
-    font-size: 0.85rem; cursor: pointer; background: transparent; transition: all 0.15s;
-  }
-  .goal-chip.selected { background: var(--gold); color: var(--black); border-color: var(--gold); }
-
-  #screen-scoreboard .content {
-    width: 100%; padding: 34px 20px 0; display: flex; flex-direction: column; gap: 12px;
-  }
-  .score-card {
-    border-radius: var(--radius); padding: 16px 18px; display: flex; align-items: center; gap: 14px;
-    position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s;
-  }
-  .score-card.is-turn { transform: scale(1.02); }
-  .score-card .team-rank { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: rgba(255,255,255,0.25); min-width: 32px; text-align: center; }
-  .score-card .team-info { flex: 1; }
-  .score-card .team-name-display { font-weight: 900; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .score-card .team-score-display { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; line-height: 1; text-align: right; min-width: 70px; }
-  .score-card .progress-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: rgba(0,0,0,0.3); }
-  .score-card .progress-fill { height: 100%; transition: width 0.6s ease; }
-  .turn-badge { background: var(--gold); color: var(--black); font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; padding: 3px 8px; border-radius: 50px; margin-top: 3px; display: inline-block; }
-  .score-actions { display: flex; gap: 10px; width: calc(100% - 40px); margin-top: 4px; }
-  .score-actions .btn { flex: 1; }
-
-  #screen-ready { background: radial-gradient(ellipse at 50% 30%, #2a0008 0%, #0a0a0a 70%); }
-  .ready-body { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 24px; gap: 20px; }
-  .ready-shield { font-size: 5rem; filter: drop-shadow(0 4px 20px rgba(200,16,46,0.6)); animation: floatShield 3s ease-in-out infinite; }
-  @keyframes floatShield { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-12px) rotate(2deg); } }
-  .ready-team { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 2px; text-align: center; line-height: 1; }
-  .ready-sub { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-align: center; letter-spacing: 1px; }
-  .ready-meta { display: flex; gap: 14px; }
-  .ready-pill { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 50px; padding: 7px 16px; font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.6); }
-  .ready-pill strong { color: var(--gold); }
-  .ready-actions { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-
-  #screen-play { background: #111; }
-  .play-timer-bar { width: 100%; background: #0d0d0d; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 12px 18px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; position: sticky; top: 0; z-index: 5; }
-  .timer-ring-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
-  .timer-ring-wrap svg { transform: rotate(-90deg); }
-  circle.bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 5; }
-  circle.fg { fill: none; stroke: var(--red); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 138.2; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
-  .timer-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-  .timer-number { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; line-height: 1; transition: color 0.3s; }
-  .timer-bar-info { flex: 1; }
-  .timer-bar-team { font-weight: 900; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
-  .timer-bar-pts { font-size: 0.72rem; color: rgba(255,255,255,0.45); margin-top: 1px; }
-  .timer-bar-pts span { color: var(--gold); font-weight: 900; }
-  .timer-score-badge { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--white); min-width: 52px; text-align: right; }
-
-  .words-scroll { flex: 1; width: 100%; overflow-y: auto; padding: 14px 16px 100px; }
-  .words-card { background: var(--white); border-radius: 18px; overflow: hidden; border: 1.5px solid rgba(0,0,0,0.08); }
-  .word-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.07); cursor: pointer; transition: background 0.15s; -webkit-tap-highlight-color: transparent; }
-  .word-row:last-child { border-bottom: none; }
-  .word-row.checked { background: #f0faf2; }
-  .word-row:active { background: #f5f5f5; }
-
-  .word-radio { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.15s, background 0.15s; }
-  .word-row.checked .word-radio { border-color: var(--green); background: var(--green); }
-  .word-radio-inner { width: 10px; height: 10px; border-radius: 50%; background: var(--white); opacity: 0; transition: opacity 0.15s; }
-  .word-row.checked .word-radio-inner { opacity: 1; }
-
-  .word-row-text { flex: 1; }
-  .word-row-name { font-size: 1rem; font-weight: 700; color: #1a1a1a; transition: color 0.15s, text-decoration 0.15s; }
-  .word-row.checked .word-row-name { color: #888; text-decoration: line-through; }
-  .word-row-cat { font-size: 0.7rem; color: #aaa; margin-top: 1px; }
-
-  .word-pts-badge { font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 900; padding: 4px 10px; border-radius: 50px; border: 1.5px solid #ddd; color: #555; min-width: 36px; text-align: center; flex-shrink: 0; transition: border-color 0.15s, color 0.15s; }
-  .word-pts-badge.hard { border-color: var(--red); color: var(--red); }
-  .word-row.checked .word-pts-badge { border-color: var(--green); color: var(--green); }
-  .word-row.checked .word-pts-badge.hard { border-color: var(--green); color: var(--green); }
-
-  .play-end-btn-wrap { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px 20px; background: linear-gradient(to top, #111 60%, transparent); z-index: 4; }
-
-  .round-end-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 30px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 10; }
-  .round-end-overlay.show { opacity: 1; pointer-events: all; }
-  .round-end-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; color: var(--gold); text-align: center; }
-  .round-points { font-family: 'Bebas Neue', sans-serif; font-size: 5.5rem; color: var(--white); line-height: 1; }
-  .round-pts-label { font-size: 0.8rem; letter-spacing: 3px; color: rgba(255,255,255,0.5); text-transform: uppercase; margin-top: -10px; }
-  .round-summary-list { width: 100%; max-width: 320px; background: rgba(255,255,255,0.06); border-radius: 14px; overflow: hidden; max-height: 200px; overflow-y: auto; }
-  .round-summary-row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.88rem; }
-  .round-summary-row:last-child { border-bottom: none; }
-  .rs-check { color: #4caf50; font-size: 1rem; min-width: 18px; }
-  .rs-name { flex: 1; color: rgba(255,255,255,0.85); }
-  .rs-pts { color: var(--gold); font-weight: 900; font-size: 0.82rem; }
-
-  #screen-winner { background: linear-gradient(160deg, #000a00 0%, #001a00 100%); }
-  #screen-winner .win-header { width: 100%; text-align: center; padding: 40px 20px 24px; flex-shrink: 0; }
-  .confetti-emoji { font-size: 3rem; display: block; animation: bounce 0.7s infinite alternate; }
-  @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
-
-  .win-team-name { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; color: var(--gold); text-align: center; margin: 8px 0 4px; line-height: 1; }
-  .win-subtitle { color: rgba(255,255,255,0.55); font-size: 0.9rem; text-align: center; }
-  .final-scores { width: calc(100% - 40px); margin: 0 auto; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-  .final-score-row { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 14px; }
-  .final-score-row .medal { font-size: 1.5rem; min-width: 30px; text-align: center; }
-  .final-score-row .fname { flex: 1; font-weight: 800; }
-  .final-score-row .fscore { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); }
-  #screen-winner .win-actions { width: calc(100% - 40px); margin: 16px auto 0; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
-
-  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,10,0.95); border-top: 1px solid rgba(255,255,255,0.08); display: flex; padding-bottom: env(safe-area-inset-bottom); z-index: 99; }
-  .bottom-nav button { flex: 1; background: none; border: none; cursor: pointer; padding: 10px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; color: rgba(255,255,255,0.35); font-family: 'Nunito', sans-serif; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: color 0.2s; }
-  .bottom-nav button.active { color: var(--gold); }
-  .bottom-nav button .nav-icon { font-size: 1.3rem; }
-
-  .no-nav + .bottom-nav, .bottom-nav.hidden { display: none; }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; z-index: 50; transition: opacity 0.3s; padding: 20px; text-align: center; }
+  .overlay.active { opacity: 1; pointer-events: all; }
+  .over-title { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--gold); }
+  .over-pts { font-size: 1.5rem; color: white; margin-bottom: 25px; }
 </style>
 </head>
 <body>
 
-<div class="screen active" id="screen-home">
-  <div class="header-band">
-    <span class="maasai-shield">🛡️</span>
-    <div class="flag-stripe"><span></span><span></span><span></span><span></span></div>
-    <div class="logo-title">Kenya at 50</div>
-    <div class="logo-sub">Word Party Game</div>
+<div class="screen active" id="scr-setup">
+  <div class="header">
+    <div class="title">KENYA AT <span>50</span></div>
+    <div class="db-status" id="db-status">Loading Database...</div>
   </div>
   <div class="content">
-    <p>Race the <strong>50-second timer</strong>. Describe Kenyan slang &amp; culture clues. First team to <strong>500 points</strong> wins! 🇰🇪</p>
-    <div class="how-grid">
-      <div class="how-item"><span class="icon">👥</span><p>2–6 Teams take turns</p></div>
-      <div class="how-item"><span class="icon">⏱️</span><p>50 seconds per round</p></div>
-      <div class="how-item"><span class="icon">🗣️</span><p>Describe — no saying the word!</p></div>
-      <div class="how-item"><span class="icon">🏆</span><p>500 points to win</p></div>
-    </div>
-    <button class="btn btn-red btn-full btn-lg" onclick="showScreen('setup')" style="margin-top:8px">🎮 Start New Game</button>
-    <button class="btn btn-ghost btn-full" onclick="showScreen('scoreboard')">📊 View Scoreboard</button>
+    <div id="team-list"></div>
+    <button class="btn btn-outline" onclick="addTeam()">➕ Add Team</button>
+    <button class="btn btn-success" style="margin-top: 15px;" onclick="startGame()">Let's Play</button>
   </div>
 </div>
 
-<div class="screen" id="screen-setup">
-  <div class="header-band"><div class="flag-stripe"><span></span><span></span><span></span><span></span></div><div class="logo-title" style="font-size:2.2rem">Set Up Game</div><div class="logo-sub">Teams &amp; Goal</div></div>
+<div class="screen" id="scr-scores">
+  <div class="header">
+    <div class="title">SCOREBOARD</div>
+    <div class="db-status" id="round-label">Round 1</div>
+  </div>
   <div class="content">
+    <div id="score-container"></div>
+    <button class="btn btn-primary" onclick="startTurn()">Start Next Turn</button>
+  </div>
+</div>
+
+<div class="screen" id="scr-play">
+  <div class="play-header">
     <div>
-      <div class="section-label">Teams</div>
-      <div id="team-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:10px"></div>
-      <button class="add-team-btn" onclick="addTeamInput()">＋ Add Team</button>
+      <div style="color: var(--gold); font-weight: 700; font-size: 1.2rem;" id="play-team">Team Name</div>
+      <div style="font-size: 0.8rem; color: #888;">Live Pts: <span id="live-pts" style="color: white; font-weight: bold;">0</span></div>
     </div>
-    <div>
-      <div class="section-label">Winning Score</div>
-      <div class="goal-selector" id="goal-selector">
-        <button class="goal-chip" data-val="300" onclick="selectGoal(this)">300</button>
-        <button class="goal-chip selected" data-val="500" onclick="selectGoal(this)">500</button>
-        <button class="goal-chip" data-val="750" onclick="selectGoal(this)">750</button>
-        <button class="goal-chip" data-val="1000" onclick="selectGoal(this)">1000</button>
-      </div>
-    </div>
-    <div>
-      <div class="section-label">Timer</div>
-      <div class="goal-selector">
-        <button class="goal-chip" data-val="30" onclick="selectTimer(this)">30s</button>
-        <button class="goal-chip selected" data-val="50" onclick="selectTimer(this)">50s</button>
-        <button class="goal-chip" data-val="60" onclick="selectTimer(this)">60s</button>
-        <button class="goal-chip" data-val="90" onclick="selectTimer(this)">90s</button>
-      </div>
-    </div>
-    <button class="btn btn-green btn-full btn-lg" onclick="startGame()">✅ Start Game</button>
-    <button class="btn btn-ghost btn-full btn-sm" onclick="showScreen('home')">← Back</button>
+    <div class="timer-text" id="play-timer">50</div>
+  </div>
+  <div class="content" style="padding-top: 10px;">
+    <div class="word-list" id="word-list"></div>
+    <button class="btn btn-primary" style="margin-top: 15px; background: #333;" onclick="endTurnEarly()">Stop Timer</button>
   </div>
 </div>
 
-<div class="screen" id="screen-scoreboard">
-  <div class="header-band"><div class="flag-stripe"><span></span><span></span><span></span><span></span></div><div class="logo-title" style="font-size:2.2rem">Scoreboard</div><div class="logo-sub" id="sb-round-label">Round 1</div></div>
-  <div class="content">
-    <div id="score-list"></div>
-    <div class="score-actions">
-      <button class="btn btn-red" style="flex:2" id="play-round-btn" onclick="playRound()">▶ Play Round</button>
-      <button class="btn btn-ghost" style="flex:1" onclick="showScreen('home')">🏠</button>
-    </div>
-  </div>
+<div class="overlay" id="over-timeup">
+  <div class="over-title" style="color: var(--red);">TIME'S UP!</div>
+  <div class="over-pts">Turn Score: <strong id="turn-score" style="color: var(--gold);">0</strong> pts</div>
+  <button class="btn btn-primary" style="max-width: 300px;" onclick="closeTurn()">Continue</button>
 </div>
 
-<div class="screen no-nav" id="screen-ready">
-  <div class="ready-body">
-    <div class="ready-shield">🛡️</div>
-    <div>
-      <div class="section-label" style="text-align:center;margin-bottom:6px">It's your turn</div>
-      <div class="ready-team" id="ready-team-name">Team 1</div>
-    </div>
-    <div class="ready-sub">Ready to reveal words and start the timer</div>
-    <div class="ready-meta">
-      <div class="ready-pill">⏱ <strong id="ready-timer-val">50</strong>s</div>
-      <div class="ready-pill">🎯 <strong id="ready-goal-val">500</strong> pts</div>
-      <div class="ready-pill">Score: <strong id="ready-score-val">0</strong></div>
-    </div>
-    <div class="ready-actions">
-      <button class="btn btn-red btn-full btn-lg" onclick="revealWords()">👁 Reveal Words &amp; Start Timer</button>
-      <button class="btn btn-ghost btn-full btn-sm" onclick="showScreen('scoreboard')">← Back</button>
-    </div>
-  </div>
+<div class="overlay" id="over-winner">
+  <div class="over-title">CHAMPIONS!</div>
+  <div class="over-pts" id="win-team" style="font-size: 2.5rem; font-weight: bold; text-transform: uppercase;">Team Name</div>
+  <button class="btn btn-success" style="max-width: 300px;" onclick="location.reload()">Play Again</button>
 </div>
-
-<div class="screen no-nav" id="screen-play">
-  <div class="play-timer-bar">
-    <div class="timer-ring-wrap">
-      <svg width="52" height="52" viewBox="0 0 52 52"><circle class="bg" cx="26" cy="26" r="22"/><circle class="fg" cx="26" cy="26" r="22" id="timer-circle"/></svg>
-      <div class="timer-center"><div class="timer-number" id="timer-number">50</div></div>
-    </div>
-    <div class="timer-bar-info">
-      <div class="timer-bar-team" id="play-team-name">—</div>
-      <div class="timer-bar-pts">Round pts: <span id="live-pts">0</span></div>
-    </div>
-    <div class="timer-score-badge" id="play-team-score">0</div>
-  </div>
-  <div class="words-scroll"><div class="words-card" id="words-card"></div></div>
-  <div class="play-end-btn-wrap"><button class="btn btn-red btn-full" onclick="endRoundEarly()">⏹ End Round Early</button></div>
-  <div class="round-end-overlay" id="round-end-overlay">
-    <div class="round-end-title">⏱ Time's Up!</div>
-    <div style="text-align:center"><div class="round-points" id="round-pts">0</div><div class="round-pts-label">points this round</div></div>
-    <div class="round-summary-list" id="round-summary-list"></div>
-    <button class="btn btn-gold btn-lg" onclick="finishRound()">📊 See Scores</button>
-  </div>
-</div>
-
-<div class="screen no-nav" id="screen-winner">
-  <div class="win-header">
-    <span class="confetti-emoji">🎉</span>
-    <div style="font-size:0.8rem;letter-spacing:3px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:4px">Champions</div>
-    <div class="win-team-name" id="win-team-name">—</div>
-    <div class="win-subtitle">First to reach the winning score!</div>
-  </div>
-  <div class="final-scores" id="final-scores"></div>
-  <div class="win-actions">
-    <button class="btn btn-green btn-full btn-lg" onclick="newGame()">🔄 Play Again</button>
-    <button class="btn btn-ghost btn-full" onclick="showScreen('home')">🏠 Home</button>
-  </div>
-</div>
-
-<nav class="bottom-nav" id="bottom-nav">
-  <button onclick="showScreen('home')" id="nav-home"><span class="nav-icon">🏠</span> Home</button>
-  <button onclick="showScreen('setup')" id="nav-setup"><span class="nav-icon">⚙️</span> Setup</button>
-  <button onclick="showScreen('scoreboard')" id="nav-scores"><span class="nav-icon">📊</span> Scores</button>
-</nav>
 
 <script>
-const BASE_WORDS = [
-  { w: "Ugali", cat: "🍽 Food", pts: 10 }, { w: "Nyama Choma", cat: "🍽 Food", pts: 10 },
-  { w: "Sukuma Wiki", cat: "🍽 Food", pts: 10 }, { w: "Mandazi", cat: "🍽 Food", pts: 10 },
-  { w: "Chai", cat: "🍽 Food", pts: 10 }, { w: "Githeri", cat: "🍽 Food", pts: 10 },
-  { w: "Chapati", cat: "🍽 Food", pts: 10 }, { w: "Pilau", cat: "🍽 Food", pts: 10 },
-  { w: "Mutura", cat: "🍽 Food", pts: 20 }, { w: "Smokie Pasua", cat: "🍽 Food", pts: 20 },
-  { w: "Maharagwe", cat: "🍽 Food", pts: 20 }, { w: "Wali wa Nazi", cat: "🍽 Food", pts: 20 },
-  { w: "Viazi", cat: "🍽 Food", pts: 10 }, { w: "Sawa Sawa", cat: "🗣 Slang", pts: 10 },
-  { w: "Mambo", cat: "🗣 Slang", pts: 10 }, { w: "Poa", cat: "🗣 Slang", pts: 10 },
-  { w: "Niaje", cat: "🗣 Slang", pts: 10 }, { w: "Uko Rada", cat: "🗣 Slang", pts: 20 },
-  { w: "Msee", cat: "🗣 Slang", pts: 10 }, { w: "Baze", cat: "🗣 Slang", pts: 10 },
-  { w: "Dunda", cat: "🗣 Slang", pts: 10 }, { w: "Vipi Yoh", cat: "🗣 Slang", pts: 20 },
-  { w: "Tialala", cat: "🗣 Slang", pts: 10 }, { w: "Sheng", cat: "🗣 Slang", pts: 10 },
-  { w: "Vamia", cat: "🗣 Slang", pts: 20 }, { w: "Msupa", cat: "🗣 Slang", pts: 10 },
-  { w: "Fukuza", cat: "🗣 Slang", pts: 20 }, { w: "Mumama", cat: "🗣 Slang", pts: 10 },
-  { w: "Manze", cat: "🗣 Slang", pts: 10 }, { w: "Pembe", cat: "🗣 Slang", pts: 20 },
-  { w: "Nairobi", cat: "📍 Places", pts: 10 }, { w: "Mombasa", cat: "📍 Places", pts: 10 },
-  { w: "Kisumu", cat: "📍 Places", pts: 10 }, { w: "Nakuru", cat: "📍 Places", pts: 10 },
-  { w: "Lamu", cat: "📍 Places", pts: 10 }, { w: "Masai Mara", cat: "📍 Places", pts: 10 },
-  { w: "Mount Kenya", cat: "📍 Places", pts: 10 }, { w: "Westlands", cat: "📍 Places", pts: 10 },
-  { w: "Parklands", cat: "📍 Places", pts: 20 }, { w: "Eldoret", cat: "📍 Places", pts: 10 },
-  { w: "Argwings Kodhek Road", cat: "📍 Places", pts: 20 }, { w: "Migingo ni Yetu", cat: "📍 Places", pts: 20 },
-  { w: "Nyamira", cat: "📍 Places", pts: 10 }, { w: "Indian Ocean", cat: "📍 Places", pts: 10 },
-  { w: "Githurai", cat: "📍 Places", pts: 20 }, { w: "Harambee", cat: "🏛 Culture", pts: 10 },
-  { w: "Uhuru", cat: "🏛 Culture", pts: 10 }, { w: "Jamhuri Day", cat: "🏛 Culture", pts: 10 },
-  { w: "Madaraka Day", cat: "🏛 Culture", pts: 20 }, { w: "Jomo Kenyatta", cat: "🏛 Culture", pts: 10 },
-  { w: "Mau Mau", cat: "🏛 Culture", pts: 10 }, { w: "Wangari Maathai", cat: "🏛 Culture", pts: 10 },
-  { w: "Cushites", cat: "🏛 Culture", pts: 20 }, { w: "Ohangla", cat: "🏛 Culture", pts: 20 },
-  { w: "Wimbo", cat: "🏛 Culture", pts: 10 }, { w: "Eliud Kipchoge", cat: "🏃 Sports", pts: 10 },
-  { w: "Harambee Stars", cat: "🏃 Sports", pts: 10 }, { w: "Safari Rally", cat: "🏃 Sports", pts: 10 },
-  { w: "Gor Mahia", cat: "🏃 Sports", pts: 10 }, { w: "AFC Leopards", cat: "🏃 Sports", pts: 10 },
-  { w: "David Rudisha", cat: "🏃 Sports", pts: 10 }, { w: "Splash", cat: "🎵 Music", pts: 10 },
-  { w: "Elani", cat: "🎵 Music", pts: 10 }, { w: "DJ Adrian", cat: "🎵 Music", pts: 20 },
-  { w: "Njugush", cat: "🎭 Comedy", pts: 20 }, { w: "Matatu", cat: "🚗 City Life", pts: 10 },
-  { w: "Bodaboda", cat: "🚗 City Life", pts: 10 }, { w: "M-Pesa", cat: "🚗 City Life", pts: 10 },
-  { w: "Jua Kali", cat: "🚗 City Life", pts: 20 }, { w: "Kanjo", cat: "🚗 City Life", pts: 10 },
-  { w: "Mjengo", cat: "🚗 City Life", pts: 10 }
+let WORLD_POOL = [
+  // Fallback data in case the JSON fails to load
+  { "w": "Matatu", "pts": 10 }, { "w": "Nyama Choma", "pts": 10 }, { "w": "Viusasa", "pts": 10 },
+  { "w": "Safaricom", "pts": 10 }, { "w": "Ugali", "pts": 10 }, { "w": "Kachumbari", "pts": 20 }
 ];
 
-// Structural expansion matrices to dynamically inflate pool past 5,000 completely offline
-const ESTATES = ["Kileleshwa", "Kilimani", "Lavington", "Runda", "Muthaiga", "Karen", "South C", "South B", "Langata", "Madaraka", "Buruburu", "Donholm", "Umoja", "Kayole", "Githurai", "Roysambu", "Kahawa", "Zimmerman", "Kasarani", "Pangani", "Ngara", "Eastleigh", "Huruma", "Mathare", "Kibera", "Kawangware", "Kangemi", "Uthiru", "Kinoo", "Kikuyu", "Ruaka", "Banana", "Karuri", "Limuru", "Thika", "Juja", "Ruiru", "Mwihoko", "Githunguri", "Kiambu"];
-const ROADS = ["Mombasa Road", "Thika Road", "Ngong Road", "Jogoo Road", "Outer Ring Road", "Juja Road", "Murang'a Road", "Limuru Road", "Kiambu Road", "Waiyaki Way", "Argwings Kodhek", "Lenana Road", "Denis Pritt", "Chaka Road", "Marcus Garvey", "George Padmore", "State House Road", "Mamlaka Road"];
-const TOWNS = ["Nairobi", "Mombasa", "Kisumu", "Nakuru", "Eldoret", "Ruiru", "Kikuyu", "Thika", "Naivasha", "Karuri", "Narok", "Kitui", "Machakos", "Mlolongo", "Athi River", "Kiambu", "Kakamega", "Meru", "Nyeri", "Kericho", "Kitale", "Malindi", "Voi", "Webuye", "Bungoma", "Busia", "Kisii", "Homabay", "Migori", "Siaya"];
+let game = { teams: [{n:"Team Moja", s:0}, {n:"Team Mbili", s:0}], curr: 0, round: 1, words: [], timer: null, time: 50, active: false };
 
-const WORDS = [...BASE_WORDS];
-let loopCounter = 1;
-while(WORDS.length < 5050) {
-  ESTATES.forEach(e => WORDS.push({ w: `${e} Sector ${loopCounter}`, cat: "📍 Estates", pts: loopCounter % 3 === 0 ? 20 : 10 }));
-  ROADS.forEach(r => WORDS.push({ w: `${r} Junction ${loopCounter}`, cat: "🚗 Routes", pts: loopCounter % 2 === 0 ? 10 : 20 }));
-  TOWNS.forEach(t => WORDS.push({ w: `${t} Plaza ${loopCounter}`, cat: "🏢 Landmarks", pts: 10 }));
-  loopCounter++;
+// Load the JSON File Asynchronously
+async function loadWords() {
+  try {
+    const res = await fetch('words.json');
+    if (!res.ok) throw new Error("File not found");
+    WORLD_POOL = await res.json();
+    document.getElementById('db-status').innerText = `${WORLD_POOL.length} words loaded successfully.`;
+    document.getElementById('db-status').style.color = "var(--green)";
+  } catch (e) {
+    document.getElementById('db-status').innerText = `Using offline fallback database.`;
+  }
 }
 
-const WORDS_PER_ROUND = 10;
-const TEAM_COLORS = [
-  { bg: "linear-gradient(135deg,#C8102E,#6b0018)", dot: "#C8102E" },
-  { bg: "linear-gradient(135deg,#00A020,#003300)", dot: "#00A020" },
-  { bg: "linear-gradient(135deg,#E6A817,#8B5E00)", dot: "#E6A817" },
-  { bg: "linear-gradient(135deg,#1565C0,#003270)", dot: "#1565C0" },
-  { bg: "linear-gradient(135deg,#7B1FA2,#38006b)", dot: "#7B1FA2" },
-  { bg: "linear-gradient(135deg,#F57C00,#7a3d00)", dot: "#F57C00" },
-];
-
-let state = { teams: [], winGoal: 500, timerDuration: 50, currentTeam: 0, round: 1, roundWords: [], timerInterval: null, timeLeft: 50, playing: false };
-let teamInputs = ["Simba Squad", "Cheetah Crew"];
-
-function showScreen(name) {
+function nav(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  const nav = document.getElementById('bottom-nav');
-  nav.classList.toggle('hidden', ['ready','play','winner'].includes(name));
-  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
-  const map = {home:'nav-home', setup:'nav-setup', scoreboard:'nav-scores'};
-  if (map[name]) document.getElementById(map[name]).classList.add('active');
-  if (name === 'scoreboard') renderScoreboard();
-  if (name === 'setup') renderTeamInputs();
+  document.getElementById(id).classList.add('active');
 }
 
-function renderTeamInputs() {
-  const list = document.getElementById('team-list');
-  list.innerHTML = '';
-  teamInputs.forEach((name, i) => {
-    const color = TEAM_COLORS[i % TEAM_COLORS.length];
-    const row = document.createElement('div');
-    row.className = 'team-row';
-    row.innerHTML = `
-      <div class="team-color-dot" style="background:${color.dot}"></div>
-      <input class="team-input" type="text" placeholder="Team ${i+1} name" value="${name}" oninput="teamInputs[${i}]=this.value">
-      ${teamInputs.length > 2 ? `<button class="btn btn-red btn-sm" style="padding:8px 12px" onclick="removeTeam(${i})">✕</button>` : ''}
-    `;
-    list.appendChild(row);
+function renderTeams() {
+  const c = document.getElementById('team-list');
+  c.innerHTML = '';
+  game.teams.forEach((t, i) => {
+    c.innerHTML += `
+      <div class="team-row" style="margin-bottom: 10px;">
+        <input class="team-input" value="${t.n}" oninput="game.teams[${i}].n=this.value">
+        ${game.teams.length > 2 ? `<button class="btn-del" onclick="delTeam(${i})">✕</button>` : ''}
+      </div>`;
   });
 }
-function addTeamInput() { if (teamInputs.length < 6) { teamInputs.push(''); renderTeamInputs(); } }
-function removeTeam(i) { teamInputs.splice(i, 1); renderTeamInputs(); }
-function selectGoal(el) { el.parentElement.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); state.winGoal = parseInt(el.dataset.val); }
-function selectTimer(el) { el.parentElement.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); state.timerDuration = parseInt(el.dataset.val); }
+function addTeam() { if(game.teams.length < 6) { game.teams.push({n:`Team ${game.teams.length+1}`, s:0}); renderTeams(); } }
+function delTeam(i) { game.teams.splice(i,1); renderTeams(); }
 
-function startGame() {
-  const names = teamInputs.map(t => t.trim()).filter(t => t.length > 0);
-  if (names.length < 2) { alert('Please enter at least 2 team names!'); return; }
-  state.teams = names.map(n => ({ name: n, score: 0 }));
-  state.currentTeam = 0;
-  state.round = 1;
-  showScreen('scoreboard');
-}
+function startGame() { nav('scr-scores'); renderScores(); }
 
-function renderScoreboard() {
-  if (!state.teams.length) return;
-  document.getElementById('sb-round-label').textContent = `Round ${state.round}`;
-  const sorted = [...state.teams].sort((a,b) => b.score - a.score);
-  const list = document.getElementById('score-list');
-  list.innerHTML = '';
-  state.teams.forEach((team, i) => {
-    const color = TEAM_COLORS[i % TEAM_COLORS.length];
-    const rank = sorted.indexOf(team) + 1;
-    const isCurrentTurn = i === state.currentTeam;
-    const pct = Math.min(100, Math.round((team.score / state.winGoal) * 100));
-    const card = document.createElement('div');
-    card.className = 'score-card slide-in' + (isCurrentTurn ? ' is-turn' : '');
-    card.style.background = color.bg;
-    card.innerHTML = `
-      <div class="team-rank">#${rank}</div>
-      <div class="team-info"><div class="team-name-display">${team.name}</div>${isCurrentTurn ? '<span class="turn-badge">▶ Your Turn</span>' : ''}</div>
-      <div class="team-score-display">${team.score}</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:rgba(255,255,255,0.35)"></div></div>
-    `;
-    list.appendChild(card);
+function renderScores() {
+  document.getElementById('round-label').innerText = `Round ${game.round}`;
+  const c = document.getElementById('score-container');
+  c.innerHTML = '';
+  [...game.teams].sort((a,b)=>b.s-a.s).forEach(t => {
+    c.innerHTML += `<div class="score-card"><div class="score-name">${t.n}</div><div class="score-pts">${t.s}</div></div>`;
   });
-  const playBtn = document.getElementById('play-round-btn');
-  playBtn.textContent = `▶ ${state.teams[state.currentTeam].name}'s Turn`;
-  list.style.cssText = 'display:flex;flex-direction:column;gap:10px';
 }
 
-function playRound() {
-  const team = state.teams[state.currentTeam];
-  const color = TEAM_COLORS[state.currentTeam % TEAM_COLORS.length];
-  document.getElementById('ready-team-name').textContent = team.name;
-  document.getElementById('ready-team-name').style.color = color.dot;
-  document.getElementById('ready-timer-val').textContent = state.timerDuration;
-  document.getElementById('ready-goal-val').textContent = state.winGoal;
-  document.getElementById('ready-score-val').textContent = team.score;
-  showScreen('ready');
-}
+function startTurn() {
+  const team = game.teams[game.curr];
+  document.getElementById('play-team').innerText = team.n;
+  
+  // Shuffle and pick 10 words
+  let pool = [...WORLD_POOL].sort(() => 0.5 - Math.random());
+  game.words = pool.slice(0, 10).map(w => ({...w, checked: false}));
+  
+  const list = document.getElementById('word-list');
+  list.innerHTML = '';
+  game.words.forEach((w, i) => {
+    list.innerHTML += `
+      <div class="word-row" id="wr-${i}" onclick="toggle(${i})">
+        <div class="word-radio"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="word-text">${w.w}</div>
+        <div class="word-pts">${w.pts || 10} pts</div>
+      </div>`;
+  });
 
-function revealWords() {
-  const team = state.teams[state.currentTeam];
-  const color = TEAM_COLORS[state.currentTeam % TEAM_COLORS.length];
-  const picked = shuffle([...WORDS]).slice(0, WORDS_PER_ROUND);
-  state.roundWords = picked.map(w => ({ ...w, checked: false }));
-  state.timeLeft = state.timerDuration;
-  state.playing = true;
-  document.getElementById('play-team-name').textContent = team.name;
-  document.getElementById('play-team-name').style.color = color.dot;
-  document.getElementById('play-team-score').textContent = team.score;
-  document.getElementById('live-pts').textContent = '0';
-  document.getElementById('round-end-overlay').classList.remove('show');
-  updateTimerDisplay(state.timerDuration, state.timerDuration);
-  renderWordList();
-  showScreen('play');
-  clearInterval(state.timerInterval);
-  state.timerInterval = setInterval(() => {
-    state.timeLeft--;
-    updateTimerDisplay(state.timeLeft, state.timerDuration);
-    if (state.timeLeft <= 0) { clearInterval(state.timerInterval); timeUp(); }
+  game.time = 50;
+  document.getElementById('play-timer').innerText = game.time;
+  document.getElementById('live-pts').innerText = '0';
+  nav('scr-play');
+  
+  game.active = true;
+  clearInterval(game.timer);
+  game.timer = setInterval(() => {
+    game.time--;
+    document.getElementById('play-timer').innerText = game.time;
+    if(game.time <= 0) endTurnEarly();
   }, 1000);
 }
 
-function renderWordList() {
-  const card = document.getElementById('words-card');
-  card.innerHTML = '';
-  state.roundWords.forEach((word, idx) => {
-    const row = document.createElement('div');
-    row.className = 'word-row' + (word.checked ? ' checked' : '');
-    row.id = 'word-row-' + idx;
-    row.onclick = () => toggleWord(idx);
-    row.innerHTML = `
-      <div class="word-radio"><div class="word-radio-inner"></div></div>
-      <div class="word-row-text"><div class="word-row-name">${word.w}</div><div class="word-row-cat">${word.cat}</div></div>
-      <div class="word-pts-badge${word.pts === 20 ? ' hard' : ''}">${word.pts}</div>
-    `;
-    card.appendChild(row);
-  });
+function toggle(i) {
+  if(!game.active) return;
+  game.words[i].checked = !game.words[i].checked;
+  const row = document.getElementById(`wr-${i}`);
+  game.words[i].checked ? row.classList.add('checked') : row.classList.remove('checked');
+  
+  let pts = game.words.filter(w=>w.checked).reduce((sum, w) => sum + (w.pts || 10), 0);
+  document.getElementById('live-pts').innerText = pts;
 }
 
-function toggleWord(idx) {
-  if (!state.playing) return;
-  state.roundWords[idx].checked = !state.roundWords[idx].checked;
-  const row = document.getElementById('word-row-' + idx);
-  if (state.roundWords[idx].checked) row.classList.add('checked'); else row.classList.remove('checked');
-  const livePts = state.roundWords.filter(w => w.checked).reduce((sum, w) => sum + w.pts, 0);
-  document.getElementById('live-pts').textContent = livePts;
-  document.getElementById('play-team-score').textContent = state.teams[state.currentTeam].score + livePts;
+function endTurnEarly() {
+  game.active = false;
+  clearInterval(game.timer);
+  let pts = game.words.filter(w=>w.checked).reduce((sum, w) => sum + (w.pts || 10), 0);
+  game.teams[game.curr].s += pts;
+  document.getElementById('turn-score').innerText = pts;
+  document.getElementById('over-timeup').classList.add('active');
 }
 
-function updateTimerDisplay(left, total) {
-  document.getElementById('timer-number').textContent = left;
-  const circ = document.getElementById('timer-circle');
-  const circumference = 138.2;
-  circ.style.strokeDashoffset = circumference * (1 - left / total);
-  if (left <= 10) { circ.style.stroke = '#ff2222'; document.getElementById('timer-number').style.color = '#ff4444'; }
-  else if (left <= 20) { circ.style.stroke = '#ff8800'; document.getElementById('timer-number').style.color = '#ff8800'; }
-  else { circ.style.stroke = 'var(--red)'; document.getElementById('timer-number').style.color = 'var(--cream)'; }
-}
-
-function timeUp() {
-  state.playing = false;
-  const pts = state.roundWords.filter(w => w.checked).reduce((sum, w) => sum + w.pts, 0);
-  document.getElementById('round-pts').textContent = pts;
-  const sumList = document.getElementById('round-summary-list');
-  sumList.innerHTML = '';
-  state.roundWords.forEach(w => {
-    const row = document.createElement('div');
-    row.className = 'round-summary-row';
-    row.innerHTML = `<div class="rs-check">${w.checked ? '✅' : '○'}</div><div class="rs-name" style="${w.checked ? '' : 'opacity:0.4'}">${w.w}</div><div class="rs-pts" style="${w.checked ? '' : 'opacity:0.3'}">+${w.pts}</div>`;
-    sumList.appendChild(row);
-  });
-  document.getElementById('round-end-overlay').classList.add('show');
-}
-
-function endRoundEarly() { clearInterval(state.timerInterval); timeUp(); }
-
-function finishRound() {
-  const pts = state.roundWords.filter(w => w.checked).reduce((sum, w) => sum + w.pts, 0);
-  state.teams[state.currentTeam].score += pts;
-  if (state.teams[state.currentTeam].score >= state.winGoal) { showWinner(state.currentTeam); return; }
-  state.currentTeam = (state.currentTeam + 1) % state.teams.length;
-  if (state.currentTeam === 0) state.round++;
-  showScreen('scoreboard');
-}
-
-function newGame() { state.teams.forEach(t => t.score = 0); state.currentTeam = 0; state.round = 1; showScreen('scoreboard'); }
-
-function showWinner(teamIdx) {
-  document.getElementById('win-team-name').textContent = state.teams[teamIdx].name;
-  const sorted = [...state.teams].sort((a,b) => b.score - a.score);
-  const medals = ['🥇','🥈','🥉','🏅','🏅','🏅'];
-  const el = document.getElementById('final-scores');
-  el.innerHTML = '';
-  sorted.forEach((t, rank) => {
-    const row = document.createElement('div');
-    row.className = 'final-score-row slide-in';
-    row.style.animationDelay = (rank * 0.08) + 's';
-    row.innerHTML = `<div class="medal">${medals[rank] || '🏅'}</div><div class="fname">${t.name}</div><div class="fscore">${t.score}</div>`;
-    el.appendChild(row);
-  });
-  showScreen('winner');
-}
-
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+function closeTurn() {
+  document.getElementById('over-timeup').classList.remove('active');
+  if(game.teams[game.curr].s >= 500) {
+    document.getElementById('win-team').innerText = game.teams[game.curr].n;
+    document.getElementById('over-winner').classList.add('active');
+    return;
   }
-  return arr;
+  game.curr++;
+  if(game.curr >= game.teams.length) { game.curr = 0; game.round++; }
+  renderScores();
+  nav('scr-scores');
 }
 
-renderTeamInputs();
-showScreen('home');
+loadWords();
+renderTeams();
 </script>
 </body>
 </html>
