@@ -2,485 +2,617 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>Kenya at 50 — Word Party Game</title>
 
-<!-- Ubuntu + Bebas for headings -->
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
---kenya-red:#BB0A21; --kenya-green:#006643; --kenya-black:#0f0f0f;
---kenya-gold:#DF9B00; --muted:#9aa0a6; --card:#151515; --glass: rgba(255,255,255,0.04);
---radius-lg:20px; --radius-md:12px; --safe-bottom:env(safe-area-inset-bottom,0px); --safe-top:env(safe-area-inset-top,0px);
-} /* Reset + base */
-*{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none}
-input,textarea{ -webkit-user-select:text; user-select:text; }
-html,body{height:100%;font-family:"Ubuntu",system-ui,-apple-system,"Segoe UI",Roboto; background:
-radial-gradient(1200px 600px at 10% 10%, rgba(187,10,33,0.06), transparent 6%),
-radial-gradient(1200px 600px at 90% 90%, rgba(0,102,67,0.06), transparent 6%),
-linear-gradient(180deg,var(--kenya-black),#121212 60%);
-color:#fff; -webkit-font-smoothing:antialiased; overflow:hidden;}
-/* App container that centers content and allows wide layouts */
-.app{
-min-height:100vh; display:flex; align-items:center; justify-content:center; padding:calc(20px + var(--safe-top)) 20px calc(20px + var(--safe-bottom));
+:root {
+  --kenya-red: #BB0A21; 
+  --kenya-green: #006643; 
+  --kenya-black: #0b0b0b;
+  --kenya-gold: #DF9B00; 
+  --muted: #a3a3a3; 
+  --card: rgba(255, 255, 255, 0.04);
+  --glass: rgba(255, 255, 255, 0.07);
+  --border-glow: rgba(255, 255, 255, 0.08);
+  --radius-lg: 24px; 
+  --radius-md: 16px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px); 
+  --safe-top: env(safe-area-inset-top, 0px);
 }
 
-/* Card wrapper to allow large UI like target site */
-.shell{
-width:100%; max-width:980px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-border-radius:26px; padding:28px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.03);
-display:grid; grid-template-columns: 380px 1fr; gap:26px; align-items:start;
-backdrop-filter: blur(6px);
+/* Reset and Core View Rules */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+input, textarea { -webkit-user-select: text; user-select: text; }
+
+html, body {
+  height: 100%;
+  font-family: "Ubuntu", system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at 50% 0%, #1e0508 0%, var(--kenya-black) 75%);
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
 
-/* Left panel - branding + setup */
-.brand-panel{
-padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-border-radius:16px; border:1px solid rgba(255,255,255,0.02);
-display:flex; flex-direction:column; gap:16px; align-items:center; text-align:center;
-} .logo{
-width:110px; height:110px; border-radius:50%; overflow:hidden; border:4px solid rgba(255,255,255,0.06);
-box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 -6px 36px rgba(0,0,0,0.25);
-} .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
-.title{ font-family:'Bebas Neue', sans-serif; font-size:3.25rem; letter-spacing:2px; margin-top:6px; }
-.title span{ color:var(--kenya-red); }
-.subtitle{ color:var(--kenya-gold); font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-top:-6px; }
-.db-status{ font-size:0.9rem; color:var(--muted); margin-top:6px; }
-
-/* Setup area */
-.setup{
-width:100%; display:flex; flex-direction:column; gap:10px; margin-top:6px;
-} .teams{ display:flex; flex-direction:column; gap:10px; }
-.team-row{ display:flex; gap:10px; align-items:center; }
-.team-input{
-flex:1; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);
-padding:14px 16px; border-radius:12px; color:#fff; font-weight:700; font-size:1rem; outline:none;
-box-shadow: inset 0 3px 8px rgba(0,0,0,0.5);
-} .team-input:focus{ box-shadow:0 6px 30px rgba(0,0,0,0.6); border-color:var(--kenya-gold); }
-.btn-row{ display:flex; gap:10px; margin-top:6px; }
-.btn{
-padding:12px 16px; border-radius:12px; border:none; cursor:pointer; font-weight:700; font-size:1rem;
-display:inline-flex; gap:10px; align-items:center; justify-content:center;
-} .btn-primary{ background:linear-gradient(135deg,var(--kenya-green),#004d32); color:#fff; box-shadow:0 12px 36px rgba(0,102,67,0.28); width:100% }
-.btn-ghost{ background:transparent; border:2px dashed rgba(223,155,0,0.18); color:var(--kenya-gold); width:100% }
-.btn-compact{ padding:10px 12px; width:54px; height:54px; border-radius:12px; background:#222; color:#ff6b6b; font-weight:800; }
-
-/* Right panel - gameplay area */
-.play-panel{
-padding:18px; border-radius:16px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-border:1px solid rgba(255,255,255,0.02); min-height:420px; display:flex; flex-direction:column; gap:12px;
-} .topbar{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
-.round{ color:var(--kenya-gold); font-weight:700; letter-spacing:1px; }
-.scoreboard{ display:flex; gap:10px; align-items:center; overflow:auto; padding:8px 0; }
-.score-chip{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:8px 12px; border-radius:999px; font-weight:700; display:inline-flex; gap:10px; align-items:center; border:1px solid rgba(255,255,255,0.02); min-width:120px; justify-content:space-between; }
-.score-chip .pts{ font-family:'Bebas Neue'; color:var(--kenya-gold); font-size:1.4rem; }
-
-/* Screens (home/ready/play/score overlays are kept but only play area visible here) */
-.screen{ display:none; }
-.screen.active{ display:block; }
-
-/* Words card */
-.words-card{ margin-top:10px; background:#fff; color:#111; border-radius:16px; overflow:hidden; box-shadow: 0 30px 70px rgba(0,0,0,0.6); }
-.word-row{ display:flex; align-items:center; gap:16px; padding:14px 16px; border-bottom:1px solid #f1f1f1; cursor:pointer; transition:transform .12s ease, background 0.12s ease; }
-.word-row:hover{ transform:translateY(-4px); background:#fafafa; }
-.word-label{ flex:1; font-weight:700; font-size:1.05rem; }
-.badge{ font-weight:700; padding:6px 12px; border-radius:999px; border:2px solid #222; background:transparent; }
-.badge.bonus{ border-color:var(--kenya-red); color:var(--kenya-red); }
-
-.check{ width:28px; height:28px; border-radius:50%; border:2px solid #222; display:flex; align-items:center; justify-content:center; background:transparent; transition:all .18s ease; flex-shrink:0; }
-.word-row.checked .check{ background:var(--kenya-green); border-color:var(--kenya-green); color:#fff; transform:scale(.98); }
-.word-row.checked .word-label{ text-decoration:line-through; color:#9aa0a6; }
-
-/* Timer & action area */
-.timerbar{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:8px; }
-.timer{ font-family:'Bebas Neue'; font-size:2.6rem; color:#fff; padding:6px 12px; background:linear-gradient(90deg,var(--kenya-red),#900516); border-radius:12px; box-shadow:0 12px 30px rgba(187,10,33,0.18); }
-.controls{ display:flex; gap:10px; align-items:center; }
-
-/* Overlay modals */
-.overlay{
-position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:120;
-pointer-events:none; opacity:0; transition:opacity .18s ease;
-} .overlay.show{ pointer-events:all; opacity:1; }
-.overlay-card{ background:linear-gradient(180deg, #0f0f0f, #131313); padding:26px; border-radius:18px; text-align:center; border:1px solid rgba(255,255,255,0.03); box-shadow: 0 40px 120px rgba(0,0,0,0.8);}
-.overlay-title{ font-family:'Bebas Neue'; font-size:3.6rem; color:var(--kenya-red); margin-bottom:6px;}
-.overlay-sub{ font-weight:700; font-size:1.4rem; color:var(--kenya-gold); margin-bottom:14px;}
-
-/* Responsive tweaks */
-@media (max-width:980px){
-.shell{ grid-template-columns:1fr; padding:18px; }
-.brand-panel{ order:2; }
-.play-panel{ order:1; }
+/* App Viewport Shell Wrapper */
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: calc(15px + var(--safe-top)) 16px calc(15px + var(--safe-bottom));
 }
 
-/* smooth transitions on elements */
-.fade-in { animation:fadeIn .4s both; }
-@keyframes fadeIn{ from{ transform:translateY(8px); opacity:0 } to{ transform:none; opacity:1 } }
+.shell {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Premium Panel Layout Cards */
+.brand-panel, .play-panel {
+  width: 100%;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--border-glow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: viewFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Screen and Section Managers */
+.screen { display: none; animation: innerFadeIn 0.3s ease standard; }
+.screen.active { display: block; }
+
+/* Visual Branding Architecture */
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 5px;
+}
+.logo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+.logo img { width: 100%; height: 100%; object-fit: cover; }
+
+.title { 
+  font-weight: 700; 
+  font-size: 2.5rem; 
+  letter-spacing: -1px; 
+  line-height: 1.1;
+  text-align: center;
+}
+.title span { color: var(--kenya-red); text-shadow: 0 0 25px rgba(187, 10, 33, 0.4); }
+.subtitle { 
+  color: var(--kenya-gold); 
+  font-weight: 500; 
+  letter-spacing: 3px; 
+  text-transform: uppercase; 
+  font-size: 0.85rem; 
+  text-align: center;
+  margin-top: -8px;
+}
+.db-status { font-size: 0.8rem; color: var(--muted); text-align: center; }
+
+/* Setup & Interactivity Interfaces */
+.setup { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+.teams { display: flex; flex-direction: column; gap: 10px; max-height: 180px; overflow-y: auto; padding-right: 4px; }
+.team-row { display: flex; gap: 10px; align-items: center; }
+
+.team-input {
+  flex: 1; 
+  background: rgba(0, 0, 0, 0.3); 
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 16px; 
+  border-radius: var(--radius-md); 
+  color: #fff; 
+  font-weight: 700; 
+  font-size: 1rem; 
+  outline: none;
+  transition: all 0.2s ease;
+}
+.team-input:focus { border-color: var(--kenya-gold); background: rgba(0, 0, 0, 0.5); box-shadow: 0 0 15px rgba(223, 155, 0, 0.15); }
+
+/* Buttons & Inputs Styling Contexts */
+.btn {
+  padding: 15px 20px; 
+  border-radius: var(--radius-md); 
+  border: none; 
+  cursor: pointer; 
+  font-weight: 700; 
+  font-size: 1rem;
+  display: inline-flex; 
+  gap: 10px; 
+  align-items: center; 
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Ubuntu', sans-serif;
+}
+.btn:active { transform: scale(0.96); opacity: 0.9; }
+.btn-primary { background: linear-gradient(135deg, var(--kenya-green), #004d32); color: #fff; box-shadow: 0 8px 24px rgba(0, 102, 67, 0.3); width: 100%; }
+.btn-danger { background: linear-gradient(135deg, var(--kenya-red), #900516); color: #fff; box-shadow: 0 8px 24px rgba(187, 10, 33, 0.3); }
+.btn-ghost { background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(223, 155, 0, 0.3); color: var(--kenya-gold); width: 100%; }
+.btn-compact { width: 48px; height: 48px; padding: 0; border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.05); color: #ff6b6b; font-size: 1.1rem; flex-shrink: 0; }
+
+/* Dashboard and Play Area Elements */
+.topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px; }
+.round { color: var(--kenya-gold); font-weight: 700; font-size: 1.1rem; }
+.scoreboard { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; width: 100%; -webkit-overflow-scrolling: touch; }
+.scoreboard::-webkit-scrollbar { display: none; }
+
+.score-chip { 
+  background: var(--card); 
+  padding: 8px 14px; 
+  border-radius: 999px; 
+  font-weight: 700; 
+  display: inline-flex; 
+  gap: 12px; 
+  align-items: center; 
+  border: 1px solid rgba(255,255,255,0.04); 
+  white-space: nowrap;
+}
+.score-chip .pts { color: var(--kenya-gold); font-weight: 700; }
+
+/* Word Matrix Component Layer */
+.words-card { 
+  background: #ffffff; 
+  color: #1a1a1a; 
+  border-radius: var(--radius-md); 
+  overflow-y: auto; 
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  -webkit-overflow-scrolling: touch;
+}
+.word-row { 
+  display: flex; 
+  align-items: center; 
+  gap: 14px; 
+  padding: 16px; 
+  border-bottom: 1px solid #f0f0f0; 
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.word-row:last-child { border-bottom: none; }
+.word-row:active { background: #f5f5f5; }
+.word-label { flex: 1; font-weight: 700; font-size: 1.1rem; color: #111; }
+.badge { font-weight: 700; font-size: 0.8rem; padding: 4px 10px; border-radius: 999px; border: 1.5px solid #222; }
+.badge.bonus { border-color: var(--kenya-red); color: var(--kenya-red); background: rgba(187,10,33,0.05); }
+
+.check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; flex-shrink: 0; }
+.word-row.checked .check { background: var(--kenya-green); border-color: var(--kenya-green); }
+.word-row.checked .check svg { stroke: #fff !important; }
+.word-row.checked .word-label { text-decoration: line-through; color: #b0b0b0; }
+
+/* Native-feel Timer Modules */
+.timer-container { display: flex; align-items: center; justify-content: space-between; margin: 10px 0; }
+.timer { 
+  font-weight: 700; 
+  font-size: 2.2rem; 
+  color: #fff; 
+  padding: 4px 16px; 
+  background: linear-gradient(135deg, var(--kenya-red), #900516); 
+  border-radius: var(--radius-md); 
+  box-shadow: 0 8px 20px rgba(187, 10, 33, 0.3);
+}
+
+/* Modals & Fullscreen Overlays */
+.overlay {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 200;
+  background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  padding: 20px; opacity: 0; transition: opacity 0.2s ease;
+}
+.overlay.show { display: flex; opacity: 1; }
+.overlay-card { 
+  background: #121212; padding: 30px 24px; border-radius: var(--radius-lg); text-align: center; 
+  border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 30px 70px rgba(0,0,0,0.9); width: 100%; max-width: 360px;
+}
+.overlay-title { font-weight: 700; font-size: 2.4rem; color: var(--kenya-red); margin-bottom: 8px; }
+.overlay-sub { font-weight: 500; font-size: 1.2rem; color: var(--kenya-gold); margin-bottom: 20px; }
+
+/* Core Structural Animations */
+@keyframes viewFadeIn { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes innerFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Flag Strip Highlight Accent */
+.flag-accent { display: flex; height: 4px; width: 100%; border-radius: 2px; overflow: hidden; margin-bottom: 5px; }
+.flag-accent div { flex: 1; }
 </style>
 </head>
 <body>
 <div class="app" id="app">
-<div class="shell fade-in" role="application" aria-label="Kenya at 50 game">
-<!-- Left - branding + setup -->
-<aside class="brand-panel" aria-hidden="false">
-<div class="logo" aria-hidden="true">
-<img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop&crop=faces" alt="Kenyan pattern" />
-</div>
-<div class="title">KENYA AT <span>50</span></div>
-<div class="subtitle">Party Word Game</div>
-<div class="db-status" id="db-status-text">Loading local database...</div>
+  <div class="shell">
+    
+    <aside class="brand-panel" id="panel-setup">
+      <div class="logo-container">
+        <div class="flag-accent">
+          <div style="background:#000;"></div><div style="background:var(--kenya-red);"></div><div style="background:var(--kenya-green);"></div>
+        </div>
+        <div class="logo">
+          <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop&crop=faces" alt="Kenyan Crest Motif" />
+        </div>
+        <div class="title">KENYA AT <span>50</span></div>
+        <div class="subtitle">Party Word Game</div>
+        <div class="db-status" id="db-status-text">Connecting database engine...</div>
+      </div>
 
-<div class="setup" aria-label="Game setup">
-<div class="teams" id="team-inputs-container" aria-live="polite"></div>
+      <div class="setup">
+        <div class="teams" id="team-inputs-container"></div>
+        <button class="btn btn-ghost" id="btn-add-team">➕ Add New Team</button>
+        <button class="btn btn-primary" id="btn-start" style="margin-top: 5px;">Let's Play</button>
+        
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-compact" id="btn-remove" title="Remove Layer">✕</button>
+          <button class="btn" id="btn-reset" style="background:transparent; border:1px solid rgba(255,255,255,0.08); color: #fff; flex: 1;">Reset Defaults</button>
+        </div>
+      </div>
+    </aside>
 
-<div class="btn-row">
-<button class="btn btn-ghost" id="btn-add-team" title="Add team">➕ Add Team</button>
-<button class="btn btn-primary" id="btn-start" title="Start game">Let's Play</button>
-</div>
-<div style="display:flex;gap:10px;margin-top:4px;">
-<button class="btn btn-compact" id="btn-remove" title="Remove last">✕</button>
-<button class="btn" id="btn-reset" style="background:transparent;border:1px solid rgba(255,255,255,0.03);">Reset</button>
-</div>
+    <main class="play-panel" id="panel-gameplay" style="display: none;">
+      <div class="topbar">
+        <div class="round" id="label-round-tracker">Round 1</div>
+        <div class="scoreboard" id="scoreboard-render-area"></div>
+      </div>
 
-<div style="margin-top:10px;color:var(--muted);font-size:0.92rem;">
-Tip: Hold device in landscape for best experience. Press the device back button to return to home when playing.
-</div>
-</div>
-</aside>
+      <section id="screen-ready" class="screen active">
+        <div style="display:flex; flex-direction:column; gap:16px; text-align:center; padding: 10px 0;">
+          <h2 id="text-ready-team" style="font-size:1.8rem; font-weight:700;">Team Moja's Turn</h2>
+          <p style="color:var(--muted); font-size: 0.95rem; line-height: 1.4;">Pass the device to the current describer. Press the button below to display your word set.</p>
+          <button class="btn btn-primary" id="btn-reveal" style="margin-top: 10px;">Reveal & Start</button>
+          <button class="btn" id="btn-quit" style="background:transparent; border:1px solid rgba(255,255,255,0.06); color:#ff6b6b;">Quit Game</button>
+        </div>
+      </section>
 
-<!-- Right - gameplay -->
-<main class="play-panel" id="main-play-panel">
-<div class="topbar">
-<div class="round" id="label-round-tracker">Round 1</div>
-<div class="scoreboard" id="scoreboard-render-area" aria-live="polite" role="list"></div>
-</div>
+      <section id="screen-play" class="screen">
+        <div class="timer-container">
+          <div style="font-weight:700; color:var(--kenya-gold); font-size: 1.3rem;" id="text-play-team">Team Moja</div>
+          <div class="timer" id="text-play-timer">00:50</div>
+        </div>
 
-<!-- Ready / Play / Score screens are layered inside play-panel -->
-<section id="screen-ready" class="screen active" style="display:block">
-<div style="display:flex;gap:16px;align-items:center;">
-<div style="flex:1">
-<h2 id="text-ready-team" style="font-size:1.6rem;margin-bottom:6px;">Team Moja's Turn</h2>
-<p style="color:var(--muted)">Hand device to the describer — reveal words when ready.</p>
-<div style="margin-top:14px;display:flex;gap:10px;">
-<button class="btn btn-primary" id="btn-reveal">Reveal & Start</button>
-<button class="btn" id="btn-quit" style="background:transparent;border:1px solid rgba(255,255,255,0.03);">Quit</button>
-</div>
-</div>
-<div style="width:220px">
-<div style="border-radius:12px;overflow:hidden;border:4px solid var(--kenya-red);box-shadow:0 20px 60px rgba(0,0,0,0.6);">
-<img src="https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?q=80&w=900&auto=format&fit=crop" alt="Shield art" style="width:100%;height:100%;object-fit:cover;display:block" />
-</div>
-</div>
-</div>
-</section>
+        <div class="words-card" id="list-game-words" style="max-height:280px;"></div>
 
-<section id="screen-play" class="screen" style="display:none">
-<div style="display:flex;justify-content:space-between;align-items:center;">
-<div style="font-weight:800;color:var(--kenya-gold);" id="text-play-team">Team Moja</div>
-<div class="timer" id="text-play-timer">00:50</div>
-</div>
+        <div style="display:flex; gap:12px; margin-top:16px;">
+          <button class="btn btn-danger" id="btn-stop" style="flex:1;">Stop Turn</button>
+          <button class="btn" id="btn-skip" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; flex:1;">Skip Word</button>
+        </div>
+      </section>
 
-<div class="words-card" id="list-game-words" style="margin-top:12px;max-height:420px;overflow:auto;"></div>
+      <section id="screen-scoreboard" class="screen">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <h3 style="color:var(--kenya-gold); font-size:1.2rem; font-weight: 700;">Round Standings</h3>
+          <div id="scoreboard-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+          <button class="btn btn-primary" id="btn-next-turn" style="margin-top: 10px;">Start Next Turn</button>
+        </div>
+      </section>
+    </main>
 
-<div style="display:flex;gap:12px;margin-top:12px;">
-<button class="btn btn-primary" id="btn-stop" style="flex:1;background:linear-gradient(135deg,var(--kenya-red),#900516)">Stop Turn</button>
-<button class="btn" id="btn-skip" style="background:transparent;border:1px solid rgba(255,255,255,0.03);">Skip Word</button>
-</div>
-</section>
-
-<section id="screen-scoreboard" class="screen" style="display:none">
-<div style="display:flex;flex-direction:column;gap:12px;">
-<h3 style="color:var(--kenya-gold);margin-top:4px">Scoreboard</h3>
-<div id="scoreboard-list" style="display:flex;flex-direction:column;gap:8px;"></div>
-<div style="margin-top:8px">
-<button class="btn btn-primary" id="btn-next-turn">Start Next Turn</button>
-</div>
-</div>
-</section>
-
-</main>
-</div>
+  </div>
 </div>
 
-<!-- TIME'S UP overlay -->
-<div class="overlay" id="modal-times-up" aria-hidden="true">
-<div class="overlay-card">
-<div class="overlay-title">TIME'S UP!</div>
-<div class="overlay-sub">Turn Score: <span id="text-gained-pts" style="color:var(--kenya-gold)">0</span></div>
-<div style="display:flex;gap:10px;justify-content:center;">
-<button class="btn btn-primary" id="btn-view-scores">View Scores</button>
-<button class="btn" id="btn-continue" style="background:transparent;border:1px solid rgba(255,255,255,0.03);">Continue</button>
-</div>
-</div>
+<div class="overlay" id="modal-times-up">
+  <div class="overlay-card">
+    <div class="overlay-title">TIME'S UP!</div>
+    <div class="overlay-sub">Turn Score: <span id="text-gained-pts">0</span></div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="btn btn-primary" id="btn-view-scores">View Standings</button>
+      <button class="btn" id="btn-continue" style="background:transparent; color:var(--muted);">Quick Continue</button>
+    </div>
+  </div>
 </div>
 
-<!-- WINNER overlay -->
-<div class="overlay" id="modal-winner" aria-hidden="true">
-<div class="overlay-card">
-<div class="overlay-title" style="color:var(--kenya-gold)">CHAMPION!</div>
-<div class="overlay-sub" id="text-winner-team" style="color:#fff;font-size:1.6rem">Team Name</div>
-<div style="margin-top:12px;">
-<button class="btn btn-primary" id="btn-new-tournament">New Tournament</button>
-</div>
-</div>
+<div class="overlay" id="modal-winner">
+  <div class="overlay-card">
+    <div class="overlay-title" style="color:var(--kenya-gold)">CHAMPION!</div>
+    <div class="overlay-sub" id="text-winner-team">Team Name</div>
+    <button class="btn btn-primary" id="btn-new-tournament">New Tournament</button>
+  </div>
 </div>
 
 <script>
-/* Runtime state (keeps same logic as original) */
 let WORLD_POOL = [];
 
 const runtime = {
-teamsList: [{name:"Team Moja",score:0},{name:"Team Mbili",score:0}],
-activeTeamPointer:0, currentRoundNumber:1, countdownTracker:null, secondsRemaining:50, isCurrentlyPlaying:false, activeWordsSet:]
+  teamsList: [{name:"Team Moja", score:0}, {name:"Team Mbili", score:0}],
+  activeTeamPointer: 0, 
+  currentRoundNumber: 1, 
+  countdownTracker: null, 
+  secondsRemaining: 50, 
+  isCurrentlyPlaying: false, 
+  activeWordsSet: []
 };
 
-/* -- DATABASE LOAD (same fall-back behaviour) -- */
+/* -- ASYNC DATABASE RESOURCE INITIALIZATION -- */
 async function loadDatabase(){
-try{
-const res = await fetch('words.json');
-if(!res.ok) throw new Error('no json');
-WORLD_POOL = await res.json();
-document.getElementById('db-status-text').innerText = Database active: ${WORLD_POOL.length} Kenyan words loaded.;
-}catch(e){
-WORLD_POOL = [];
-for(let i=1;i<=5050;i++) WORLD_POOL.push({ w:Kenyan Word Entry #${i}, pts: i % 7 === 0 ? 20 : 10 });
-document.getElementById('db-status-text').innerText = Failover Database: ${WORLD_POOL.length} records generated.;
-} renderScoreboardChips();
+  try {
+    const res = await fetch('words.json');
+    if(!res.ok) throw new Error('Network file missing');
+    WORLD_POOL = await res.json();
+    document.getElementById('db-status-text').innerText = `${WORLD_POOL.length} Kenyan words loaded.`;
+  } catch(e) {
+    WORLD_POOL = [];
+    for(let i=1; i<=5000; i++) {
+      WORLD_POOL.push({ w: `Kenyan Topic Card #${i}`, pts: i % 6 === 0 ? 20 : 10 });
+    }
+    document.getElementById('db-status-text').innerText = `Failover active: ${WORLD_POOL.length} cards active.`;
+  } 
+  renderScoreboardChips();
 }
 
-/* -- UI helpers -- */
-function displayScreen(id){
-// hide all internal screens inside play-panel
-['screen-ready','screen-play','screen-scoreboard'].forEach(s=>{
-const el = document.getElementById(s);
-if(!el) return;
-el.style.display = (s===id) ? 'block' : 'none';
-});
+/* -- MOBILE MULTI-SCREEN MANAGER SYSTEM -- */
+function displayScreen(viewId) {
+  const setupPanel = document.getElementById('panel-setup');
+  const gameplayPanel = document.getElementById('panel-gameplay');
+
+  if (viewId === 'setup') {
+    gameplayPanel.style.display = 'none';
+    setupPanel.style.display = 'flex';
+    routeHistoryState('setup');
+    return;
+  }
+
+  setupPanel.style.display = 'none';
+  gameplayPanel.style.display = 'flex';
+
+  ['screen-ready', 'screen-play', 'screen-scoreboard'].forEach(s => {
+    const el = document.getElementById(s);
+    if(el) el.style.display = (s === viewId) ? 'block' : 'none';
+  });
+  routeHistoryState(viewId);
 }
 
-/* Draw setup form */
+/* Dynamic Configuration Entry Builder */
 function drawSetupForm(){
-const container = document.getElementById('team-inputs-container');
-container.innerHTML = '';
-runtime.teamsList.forEach((team,idx)=>{
-const row = document.createElement('div'); row.className='team-row';
-const input = document.createElement('input'); input.className='team-input'; input.value = team.name;
-input.onchange = (e)=> runtime.teamsList[idx].name = e.target.value;
-input.setAttribute('aria-label', Team ${idx+1} name);
-row.appendChild(input);
-// remove button if >2
-if(runtime.teamsList.length > 2){
-const rm = document.createElement('button'); rm.className='btn btn-compact'; rm.innerText='✕';
-rm.onclick = ()=> { runtime.teamsList.splice(idx,1); drawSetupForm(); renderScoreboardChips(); };
-row.appendChild(rm);
-}
-container.appendChild(row);
-});
+  const container = document.getElementById('team-inputs-container');
+  container.innerHTML = '';
+  runtime.teamsList.forEach((team, idx)=>{
+    const row = document.createElement('div'); 
+    row.className='team-row';
+    const input = document.createElement('input'); 
+    input.className='team-input'; 
+    input.value = team.name;
+    input.onchange = (e) => runtime.teamsList[idx].name = e.target.value;
+    row.appendChild(input);
+    
+    if(runtime.teamsList.length > 2){
+      const rm = document.createElement('button'); 
+      rm.className='btn btn-compact'; 
+      rm.innerText='✕';
+      rm.onclick = () => { runtime.teamsList.splice(idx, 1); drawSetupForm(); renderScoreboardChips(); };
+      row.appendChild(rm);
+    }
+    container.appendChild(row);
+  });
 }
 
-/* Scoreboard chips on top */
 function renderScoreboardChips(){
-document.getElementById('label-round-tracker').innerText = Round ${runtime.currentRoundNumber};
-const area = document.getElementById('scoreboard-render-area'); area.innerHTML = '';
-runtime.teamsList.forEach((t,idx)=>{
-const chip = document.createElement('div'); chip.className='score-chip';
-chip.setAttribute('role','listitem');
-chip.innerHTML = <div style="font-weight:700">${t.name}</div><div class="pts">${t.score}</div>;
-area.appendChild(chip);
-});
+  document.getElementById('label-round-tracker').innerText = `Round ${runtime.currentRoundNumber}`;
+  const area = document.getElementById('scoreboard-render-area'); 
+  area.innerHTML = '';
+  runtime.teamsList.forEach((t)=>{
+    const chip = document.createElement('div'); 
+    chip.className='score-chip';
+    chip.innerHTML = `<div>${t.name}</div><div class="pts">${t.score}</div>`;
+    area.appendChild(chip);
+  });
 
-// also render scoreboard list (right column)
-const list = document.getElementById('scoreboard-list'); if(list){ list.innerHTML = '';
-[...runtime.teamsList].sort((a,b)=>b.score-a.score).forEach(t=>{
-const item = document.createElement('div'); item.className='score-card';
-item.style = 'display:flex;justify-content:space-between;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);';
-item.innerHTML = <div style="font-weight:700">${t.name}</div><div style="font-family:\'Bebas Neue\';color:var(--kenya-gold)">${t.score}</div>;
-list.appendChild(item);
-});
-} }
+  const list = document.getElementById('scoreboard-list'); 
+  if(list){ 
+    list.innerHTML = '';
+    [...runtime.teamsList].sort((a,b) => b.score - a.score).forEach(t => {
+      const item = document.createElement('div');
+      item.style = 'display:flex; justify-content:space-between; padding:14px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); font-weight:700;';
+      item.innerHTML = `<div>${t.name}</div><div style="color:var(--kenya-gold)">${t.score} pts</div>`;
+      list.appendChild(item);
+    });
+  } 
+}
 
-/* Buttons */
+/* -- ACTION LISTENERS MAP -- */
 document.getElementById('btn-add-team').addEventListener('click', ()=>{
-if(runtime.teamsList.length < 6) runtime.teamsList.push({name:Team ${runtime.teamsList.length+1},score:0});
-drawSetupForm(); renderScoreboardChips();
+  if(runtime.teamsList.length < 6) runtime.teamsList.push({name:`Team ${runtime.teamsList.length + 1}`, score:0});
+  drawSetupForm(); renderScoreboardChips();
 });
 document.getElementById('btn-remove').addEventListener('click', ()=>{
-if(runtime.teamsList.length>2) runtime.teamsList.pop();
-drawSetupForm(); renderScoreboardChips();
+  if(runtime.teamsList.length > 2) runtime.teamsList.pop();
+  drawSetupForm(); renderScoreboardChips();
 });
 document.getElementById('btn-reset').addEventListener('click', ()=>{
-if(confirm('Reset scores and teams to default?')){ runtime.teamsList = [{name:'Team Moja',score:0},{name:'Team Mbili',score:0}]; runtime.activeTeamPointer=0; runtime.currentRoundNumber=1; drawSetupForm(); renderScoreboardChips(); }
+  if(confirm('Reset all scores and teams to default configuration?')){ 
+    runtime.teamsList = [{name:'Team Moja', score:0}, {name:'Team Mbili', score:0}]; 
+    runtime.activeTeamPointer = 0; 
+    runtime.currentRoundNumber = 1; 
+    drawSetupForm(); renderScoreboardChips(); 
+  }
 });
-document.getElementById('btn-start').addEventListener('click', ()=> {
-drawScoreboardMetrics(); displayScreen('screen-scoreboard'); document.getElementById('screen-scoreboard').style.display='block';
+
+document.getElementById('btn-start').addEventListener('click', () => {
+  renderScoreboardChips(); 
+  displayScreen('screen-scoreboard');
 });
 document.getElementById('btn-next-turn').addEventListener('click', goToReadyScreen);
-document.getElementById('btn-reveal').addEventListener('click', ()=> triggerPlayPhase(true));
-document.getElementById('btn-quit').addEventListener('click', ()=> { if(confirm('Quit game?')) location.reload(); });
-
-/* Play screen controls */
-document.getElementById('btn-stop').addEventListener('click', ()=> forceStopTurn());
-document.getElementById('btn-skip').addEventListener('click', ()=> { /* simple skip animation: move first word to end */
-if(runtime.isCurrentlyPlaying && runtime.activeWordsSet.length>0){ runtime.activeWordsSet.push(runtime.activeWordsSet.shift()); buildInteractionsList(); }
+document.getElementById('btn-reveal').addEventListener('click', () => triggerPlayPhase());
+document.getElementById('btn-quit').addEventListener('click', () => { if(confirm('Quit matching session?')) displayScreen('setup'); });
+document.getElementById('btn-stop').addEventListener('click', () => forceStopTurn());
+document.getElementById('btn-skip').addEventListener('click', () => {
+  if(runtime.isCurrentlyPlaying && runtime.activeWordsSet.length > 0){ 
+    runtime.activeWordsSet.push(runtime.activeWordsSet.shift()); 
+    buildInteractionsList(); 
+  }
 });
 
-/* Overlays */
 document.getElementById('btn-view-scores').addEventListener('click', ()=>{
-closeOverlay('modal-times-up'); displayScreen('screen-scoreboard'); renderScoreboardChips();
+  closeOverlay('modal-times-up'); displayScreen('screen-scoreboard'); renderScoreboardChips();
 });
-document.getElementById('btn-continue').addEventListener('click', ()=> { closeOverlay('modal-times-up'); proceedToNextTurn(); });
-document.getElementById('btn-new-tournament').addEventListener('click', ()=> location.reload());
+document.getElementById('btn-continue').addEventListener('click', () => { 
+  closeOverlay('modal-times-up'); proceedToNextTurn(); 
+});
+document.getElementById('btn-new-tournament').addEventListener('click', () => {
+  closeOverlay('modal-winner');
+  runtime.teamsList.forEach(t => t.score = 0);
+  runtime.activeTeamPointer = 0;
+  runtime.currentRoundNumber = 1;
+  drawSetupForm();
+  displayScreen('setup');
+});
 
-/* Scoreboard drawing for main panel action */
-function drawScoreboardMetrics(){
-renderScoreboardChips();
-const listArea = document.getElementById('scoreboard-render-area');
-// keep the scoreboard chips updated above
-}
-
-/* Ready -> Play */
 function goToReadyScreen(){
-const currentTeam = runtime.teamsList[runtime.activeTeamPointer];
-document.getElementById('text-ready-team').innerText = ${currentTeam.name}'s Turn;
-displayScreen('screen-ready');
+  const currentTeam = runtime.teamsList[runtime.activeTeamPointer];
+  document.getElementById('text-ready-team').innerText = `${currentTeam.name}'s Turn`;
+  displayScreen('screen-ready');
 }
 
-/* pick random words and start timer */
-function triggerPlayPhase(startImmediately=false){
-const currentTeam = runtime.teamsList[runtime.activeTeamPointer];
-document.getElementById('text-play-team').innerText = currentTeam.name;
+function triggerPlayPhase(){
+  const currentTeam = runtime.teamsList[runtime.activeTeamPointer];
+  document.getElementById('text-play-team').innerText = currentTeam.name;
 
-// pick 10 random
-runtime.activeWordsSet = [...WORLD_POOL].sort(()=>0.5 - Math.random()).slice(0,10).map(i=>({...i, checked:false}));
-buildInteractionsList();
+  runtime.activeWordsSet = [...WORLD_POOL].sort(() => 0.5 - Math.random()).slice(0, 10).map(i => ({...i, checked:false}));
+  buildInteractionsList();
 
-runtime.secondsRemaining = 50; document.getElementById('text-play-timer').innerText = 00:${runtime.secondsRemaining};
-displayScreen('screen-play');
+  runtime.secondsRemaining = 50; 
+  document.getElementById('text-play-timer').innerText = `00:${runtime.secondsRemaining}`;
+  displayScreen('screen-play');
 
-runtime.isCurrentlyPlaying = true; clearInterval(runtime.countdownTracker);
-runtime.countdownTracker = setInterval(()=>{
-runtime.secondsRemaining--;
-document.getElementById('text-play-timer').innerText = 00:${runtime.secondsRemaining < 10 ? '0'+runtime.secondsRemaining : runtime.secondsRemaining};
-if(runtime.secondsRemaining <= 0) handleRoundTimeout();
-},1000);
+  runtime.isCurrentlyPlaying = true; 
+  clearInterval(runtime.countdownTracker);
+  runtime.countdownTracker = setInterval(() => {
+    runtime.secondsRemaining--;
+    document.getElementById('text-play-timer').innerText = `00:${runtime.secondsRemaining < 10 ? '0' + runtime.secondsRemaining : runtime.secondsRemaining}`;
+    if(runtime.secondsRemaining <= 0) handleRoundTimeout();
+  }, 1000);
 }
 
-/* Build words into DOM */
 function buildInteractionsList(){
-const container = document.getElementById('list-game-words'); container.innerHTML = '';
-runtime.activeWordsSet.forEach((item,index)=>{
-const row = document.createElement('div'); row.className = word-row ${item.checked? 'checked':''}; row.tabIndex=0;
-row.onclick = ()=> processToggleInput(index,row);
-row.onkeydown = (e)=> { if(e.key === 'Enter' || e.key === ' ') processToggleInput(index,row); };
-const check = document.createElement('div'); check.className='check';
-check.innerHTML = <svg viewBox="0 0 24 24" width="16" height="16" style="stroke:transparent;fill:none"><polyline points="20 6 9 17 4 12" stroke-width="3" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>;
-const label = document.createElement('div'); label.className='word-label'; label.innerText = item.w;
-const badge = document.createElement('div'); badge.className='badge'+(item.pts===20?' bonus':''); badge.innerText = ${item.pts} Pts;
-row.appendChild(check); row.appendChild(label); row.appendChild(badge);
-container.appendChild(row);
-});
+  const container = document.getElementById('list-game-words'); 
+  container.innerHTML = '';
+  runtime.activeWordsSet.forEach((item, index)=>{
+    const row = document.createElement('div'); 
+    row.className = `word-row ${item.checked ? 'checked' : ''}`;
+    row.onclick = () => processToggleInput(index, row);
+    
+    const check = document.createElement('div'); 
+    check.className='check';
+    check.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke-width="3" stroke="transparent" fill="none" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>`;
+    
+    const label = document.createElement('div'); 
+    label.className='word-label'; 
+    label.innerText = item.w;
+    
+    const badge = document.createElement('div'); 
+    badge.className=`badge ${item.pts === 20 ? 'bonus' : ''}`; 
+    badge.innerText = `${item.pts} Pts`;
+    
+    row.appendChild(check); row.appendChild(label); row.appendChild(badge);
+    container.appendChild(row);
+  });
 }
 
-/* Toggle checks while playing */
-function processToggleInput(index, ui){
-if(!runtime.isCurrentlyPlaying) return;
-runtime.activeWordsSet[index].checked = !runtime.activeWordsSet[index].checked;
-ui.classList.toggle('checked', runtime.activeWordsSet[index].checked);
+function processToggleInput(index, uiElement){
+  if(!runtime.isCurrentlyPlaying) return;
+  runtime.activeWordsSet[index].checked = !runtime.activeWordsSet[index].checked;
+  uiElement.classList.toggle('checked', runtime.activeWordsSet[index].checked);
 }
 
-/* Stop early */
 function forceStopTurn(){ handleRoundTimeout(); }
 
-/* Timeout handler and overlay */
 function handleRoundTimeout(){
-runtime.isCurrentlyPlaying = false; clearInterval(runtime.countdownTracker);
-const aggregate = runtime.activeWordsSet.filter(w=>w.checked).reduce((s,w)=>s+w.pts,0);
-document.getElementById('text-gained-pts').innerText = aggregate;
-runtime.teamsList[runtime.activeTeamPointer].score += aggregate;
-showOverlay('modal-times-up');
+  runtime.isCurrentlyPlaying = false; 
+  clearInterval(runtime.countdownTracker);
+  const totalGained = runtime.activeWordsSet.filter(w => w.checked).reduce((s, w) => s + w.pts, 0);
+  document.getElementById('text-gained-pts').innerText = totalGained;
+  runtime.teamsList[runtime.activeTeamPointer].score += totalGained;
+  showOverlay('modal-times-up');
 }
 
-/* proceed logic */
 function proceedToNextTurn(){
-closeOverlay('modal-times-up');
-// win condition check
-if(runtime.teamsList[runtime.activeTeamPointer].score >= 500){
-document.getElementById('text-winner-team').innerText = runtime.teamsList[runtime.activeTeamPointer].name;
-showOverlay('modal-winner'); return;
-} runtime.activeTeamPointer++;
-if(runtime.activeTeamPointer >= runtime.teamsList.length){ runtime.activeTeamPointer = 0; runtime.currentRoundNumber++; }
-drawScoreboardMetrics();
-displayScreen('screen-scoreboard');
+  closeOverlay('modal-times-up');
+  if(runtime.teamsList[runtime.activeTeamPointer].score >= 500){
+    document.getElementById('text-winner-team').innerText = runtime.teamsList[runtime.activeTeamPointer].name;
+    showOverlay('modal-winner'); 
+    return;
+  } 
+  runtime.activeTeamPointer++;
+  if(runtime.activeTeamPointer >= runtime.teamsList.length){ 
+    runtime.activeTeamPointer = 0; 
+    runtime.currentRoundNumber++; 
+  }
+  renderScoreboardChips();
+  displayScreen('screen-scoreboard');
 }
 
-/* overlay helpers */
 function showOverlay(id){
-const el = document.getElementById(id); if(!el) return;
-el.classList.add('show'); el.style.display='flex';
-el.setAttribute('aria-hidden','false');
-el.style.opacity = '1';
+  const el = document.getElementById(id); 
+  if(el) el.classList.add('show');
 }
 function closeOverlay(id){
-const el = document.getElementById(id); if(!el) return;
-el.classList.remove('show'); el.style.display='none';
-el.setAttribute('aria-hidden','true');
+  const el = document.getElementById(id); 
+  if(el) el.classList.remove('show');
 }
 
-/* draw scoreboard list */
-function drawScoreboardMetrics(){ renderScoreboardChips(); }
+/* -- HARDENED HIGH-PERFORMANCE BACK BUTTON INTERCEPTOR ROUTER -- */
+let stateUpdatingFlag = false;
 
-/* Initial bootup */
-drawSetupForm(); loadDatabase();
-
-/* Back button handling:
-When the hardware back button is pressed (Android WebView or PWA), intercept to go to home
-This also works for browsers: pressing back will not leave app, we manage history entries
-*/
-(function manageBackBehavior(){
-// push a state so back returns here
-history.replaceState({app:true,screen:'home'},'');
-// when navigating between screens, push states
-function pushScreenState(name){ history.pushState({app:true,screen:name}, ''); }
-// push when opening play/ready/scoreboard
-const origDisplayScreen = displayScreen;
-displayScreen = function(name){
-origDisplayScreen(name);
-pushScreenState(name);
-};
-
-// intercept popstate
-window.addEventListener('popstate', (e)=>{
-// if the state is our app state, move to home screen instead of exiting
-const state = e.state;
-if(!state || !state.app){
-// if user is on non-home screen, go home
-if(document.getElementById('screen-play').style.display === 'block' || document.getElementById('screen-scoreboard').style.display === 'block' || document.getElementById('screen-ready').style.display === 'block'){
-// bring user to home / ready default
-displayScreen('screen-ready'); // will push new state
-} else {
-// allow leaving if already at home
-// but to be safe, push a new state and remain in app
-history.pushState({app:true,screen:'home'},'');
+function routeHistoryState(screenId) {
+  if (stateUpdatingFlag) return;
+  stateUpdatingFlag = true;
+  if (!history.state || history.state.screen !== screenId) {
+    history.pushState({ screen: screenId }, '');
+  }
+  stateUpdatingFlag = false;
 }
-} else {
-// navigate to the recorded screen
-const target = state.screen || 'screen-ready';
-displayScreen(target);
-}
-}, false);
-})();
 
-/* Accessibility: keyboard shortcut to toggle first word during play (space) */
-window.addEventListener('keydown', (e)=>{
-if(e.key === ' ' && runtime.isCurrentlyPlaying){
-e.preventDefault();
-// toggle first unchecked word
-const idx = runtime.activeWordsSet.findIndex(w=>!w.checked);
-if(idx >= 0){
-const rows = document.querySelectorAll('#list-game-words .word-row');
-if(rows[idx]) processToggleInput(idx, rows[idx]);
-}
-} });
+window.addEventListener('popstate', (event) => {
+  if (stateUpdatingFlag) return;
+  stateUpdatingFlag = true;
+  
+  if (event.state && event.state.screen) {
+    const dest = event.state.screen;
+    // Check internal states and mirror back navigation actions natively
+    if (dest === 'screen-play' && !runtime.isCurrentlyPlaying) {
+      displayScreen('screen-ready');
+    } else {
+      // Execute the view restoration routine safely
+      const setupPanel = document.getElementById('panel-setup');
+      const gameplayPanel = document.getElementById('panel-gameplay');
+      if (dest === 'setup') {
+        gameplayPanel.style.display = 'none';
+        setupPanel.style.display = 'flex';
+      } else {
+        setupPanel.style.display = 'none';
+        gameplayPanel.style.display = 'flex';
+        ['screen-ready', 'screen-play', 'screen-scoreboard'].forEach(s => {
+          const el = document.getElementById(s);
+          if(el) el.style.display = (s === dest) ? 'block' : 'none';
+        });
+      }
+    }
+  } else {
+    // Force drop back to default home base setup array, completely intercepting native exit
+    document.getElementById('panel-gameplay').style.display = 'none';
+    document.getElementById('panel-setup').style.display = 'flex';
+    history.pushState({ screen: 'setup' }, '');
+  }
+  stateUpdatingFlag = false;
+});
+
+// App Engine Launch Boot
+drawSetupForm(); 
+loadDatabase();
+history.replaceState({ screen: 'setup' }, '');
 </script>
 </body>
 </html>
