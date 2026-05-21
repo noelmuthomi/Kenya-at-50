@@ -1,99 +1,84 @@
-name: Generate Production FOSS Android App
+name: Generate FOSS Android App
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
+# Forces GitHub Actions to bypass the deprecated Node 20 environment
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build:
+  build-apk:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Source Code
+      - name: Checkout Code Repository
         uses: actions/checkout@v4
 
-      - name: Set up Java Environment
+      - name: Set up Java 17 for Android
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'zulu'
 
-      - name: Set up Node.js Runtime
+      - name: Set up Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
-      - name: Build Android App Pack
+      - name: Compile Application
         run: |
-          # 1. Prepare web asset folder and copy your code and database
+          # 1. Prepare web root directory
           mkdir www
           cp index.html www/index.html
-          cp words.json www/words.json
           
-          # 2. Setup project package parameters including the asset generation tools
+          # Only copy words.json if it exists (prevents crashing if you haven't uploaded it yet)
+          if [ -f "words.json" ]; then
+            cp words.json www/words.json
+          fi
+          
+          # 2. Setup Capacitor 6 framework parameters
           cat << 'EOF' > package.json
           {
             "name": "kenya-at-50",
             "version": "1.0.0",
             "description": "FOSS Word Game",
             "main": "index.html",
-            "scripts": {
-              "build": "echo 'No build step required for raw HTML'"
-            },
-            "devDependencies": {
-              "@capacitor/cli": "^6.0.0",
-              "@capacitor/assets": "^3.0.0"
-            },
-            "dependencies": {
-              "@capacitor/android": "^6.0.0",
-              "@capacitor/core": "^6.0.0"
-            }
+            "scripts": { "build": "echo 'Skipping node build'" },
+            "devDependencies": { "@capacitor/cli": "^6.0.0" },
+            "dependencies": { "@capacitor/android": "^6.0.0", "@capacitor/core": "^6.0.0" }
           }
           EOF
           
-          # 3. Install dependencies
+          # 3. Install core bridging modules
           npm install
           
-          # 4. Initialize Capacitor Config System
+          # 4. Configure Capacitor rules (Allows local JSON file fetching)
           cat << 'EOF' > capacitor.config.json
           {
             "appId": "org.kenya50.game",
             "appName": "Kenya At 50",
             "webDir": "www",
             "bundledWebRuntime": false,
-            "plugins": {
-              "CapacitorHttp": {
-                "enabled": true
-              }
-            },
             "server": {
-              "androidScheme": "https"
+              "androidScheme": "https",
+              "cleartext": true
             }
           }
           EOF
           
-          # 5. Inject native android module
+          # 5. Inject Android container and sync web assets
           npx cap add android
-
-          # 6. ICON GENERATION STEP
-          # If the icon exists, use Capacitor Assets to auto-generate all Android icon sizes
-          if [ -f "icon-only.png" ]; then
-            npx capacitor-assets generate --android --iconSecureTemplate icon-only.png
-          else
-            echo "Warning: icon-only.png not found. Using default Android icon."
-          fi
-          
-          # 7. Sync files and execute direct gradle target compilation
           npx cap sync android
+          
+          # 6. Build the final APK binary
           cd android
           ./gradlew assembleDebug
 
-      - name: Export Executable App
+      - name: Provide Downloadable APK
         uses: actions/upload-artifact@v4
         with:
-          name: Kenya50-WordGame-APK
+          name: Kenya50-Game-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
