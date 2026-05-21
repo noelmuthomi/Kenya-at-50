@@ -1,11 +1,10 @@
-name: Production Android Build
+name: Production Android Build (Fully Offline)
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
-# Forces GitHub Actions to bypass the deprecated Node 20 environment
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -27,19 +26,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: 'npm'
 
-      - name: Compile and Package Application
+      - name: Prepare offline web assets
         run: |
-          # 1. Prepare web root directory
           mkdir -p www
           cp index.html www/index.html
-          [ -f "words.json" ] && cp words.json www/words.json
-          
-          # 2. Setup project infrastructure
-          cat << 'EOF' > package.json
+          if [ -f "words.json" ]; then
+            cp words.json www/words.json
+          else
+            echo "Error: words.json is required for offline game." >&2
+            exit 1
+          fi
+          # Ensure app works fully offline; no extra network requests
+          echo "Offline bundle contains: index.html and words.json"
+
+      - name: Create package.json
+        run: |
+          cat > package.json <<'EOF'
           {
             "name": "kenya-at-50",
             "version": "1.0.0",
+            "scripts": {
+              "build": "echo 'Using pre‑prepared www assets'"
+            },
             "devDependencies": {
               "@capacitor/cli": "^6.0.0",
               "@capacitor/assets": "^3.0.0"
@@ -50,20 +60,8 @@ jobs:
             }
           }
           EOF
-          
-          # 3. Install core dependencies
-          npm install
-          
-          # 4. Generate App Icons (Auto-generated from assets/icon.png)
-          if [ -f "assets/icon.png" ]; then
-            echo "Generating adaptive icons..."
-            npx capacitor-assets generate --android
-          else
-            echo "Warning: assets/icon.png not found. Using default."
-          fi
-          
-          # 5. Initialize Capacitor Config
-          cat << 'EOF' > capacitor.config.json
+
+          cat > capacitor.config.json <<'EOF'
           {
             "appId": "org.kenya50.game",
             "appName": "Kenya At 50",
@@ -75,16 +73,30 @@ jobs:
             }
           }
           EOF
-          
-          # 6. Inject native Android framework and sync assets
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Generate Android icons from assets/icon.png
+        run: |
+          if [ -f "assets/icon.png" ]; then
+            echo "Generating Android icons from assets/icon.png"
+            npx capacitor-assets generate --android
+          else
+            echo "Error: assets/icon.png is required for the app icon." >&2
+            exit 1
+          fi
+
+      - name: Create and sync Capacitor Android project
+        run: |
           npx cap add android
           npx cap sync android
-          
-          # 7. Final Build
-          cd android
-          ./gradlew assembleDebug
 
-      - name: Provide Downloadable APK
+      - name: Build Android debug APK (fully offline)
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: KenyaAt50-Game-APK
