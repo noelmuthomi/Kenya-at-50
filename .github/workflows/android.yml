@@ -5,126 +5,87 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+# Fixes the Node.js 20 Deprecation Warning
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up Java Environment
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'zulu'
 
-      - name: Setup Android SDK Tools
-        uses: android-actions/setup-android@v3
+      - name: Set up Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Build Native App Package
+      - name: Build Android App Pack
         run: |
-          # 1. Install an ultra-reliable HTML-to-Android engine wrapper
-          sudo apt-get update && sudo apt-get install -y wget zip unzip
+          # 1. Prepare web asset folder and copy your code and database
+          mkdir www
+          cp index.html www/index.html
+          cp words.json www/words.json
           
-          # 2. Setup the application directory
-          mkdir -p app/src/main/assets
-          mkdir -p app/src/main/res/values
+          # 2. Setup project package parameters for Capacitor 6
+          cat << 'EOF' > package.json
+          {
+            "name": "kenya-at-50",
+            "version": "1.0.0",
+            "description": "FOSS Word Game",
+            "main": "index.html",
+            "scripts": {
+              "build": "echo 'No build step required for raw HTML'"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "^6.0.0"
+            },
+            "dependencies": {
+              "@capacitor/android": "^6.0.0",
+              "@capacitor/core": "^6.0.0"
+            }
+          }
+          EOF
           
-          # 3. Move your game files into the Android asset ecosystem
-          cp index.html app/src/main/assets/index.html
-          cp words.json app/src/main/assets/words.json
+          # 3. Install dependencies
+          npm install
           
-          # 4. Generate the required native Android Manifest configuration
-          cat << 'EOF' > app/src/main/AndroidManifest.xml
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.kenya50.game">
-              <uses-permission android:name="android.permission.INTERNET" />
-              <application android:label="Kenya At 50" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:allowBackup="true" android:icon="@android:drawable/sym_def_app_icon">
-                  <activity android:name="org.kenya50.game.MainActivity" android:exported="true" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|screenSize">
-                      <intent-filter>
-                          <action android:name="android.intent.action.MAIN" />
-                          <category android:name="android.intent.category.LAUNCHER" />
-                      </intent-filter>
-                  </activity>
-              </application>
-          </manifest>
-          EOF
-
-          # 5. Build the underlying Java Activity to launch your offline code safely
-          mkdir -p app/src/main/java/org/kenya50/game
-          cat << 'EOF' > app/src/main/java/org/kenya50/game/MainActivity.java
-          package org.kenya50.game;
-          import android.app.Activity;
-          import android.os.Bundle;
-          import android.webkit.WebSettings;
-          import android.webkit.WebView;
-          import android.webkit.WebViewClient;
-
-          public class MainActivity extends Activity {
-              @Override
-              protected void onCreate(Bundle savedInstanceState) {
-                  super.onCreate(savedInstanceState);
-                  WebView webView = new WebView(this);
-                  WebSettings webSettings = webView.getSettings();
-                  webSettings.setJavaScriptEnabled(true);
-                  webSettings.setDomStorageEnabled(true);
-                  webSettings.setDatabaseEnabled(true);
-                  webSettings.setAllowFileAccess(true);
-                  webSettings.setLoadWithOverviewMode(true);
-                  webSettings.setUseWideViewPort(true);
-                  
-                  // This allows the local index.html to fetch the local words.json safely
-                  webSettings.setAllowFileAccessFromFileURLs(true);
-                  webSettings.setAllowUniversalAccessFromFileURLs(true);
-                  
-                  webView.setWebViewClient(new WebViewClient());
-                  webView.loadUrl("file:///android_asset/index.html");
-                  setContentView(webView);
+          # 4. Initialize Capacitor Config System
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "org.kenya50.game",
+            "appName": "Kenya At 50",
+            "webDir": "www",
+            "bundledWebRuntime": false,
+            "plugins": {
+              "CapacitorHttp": {
+                "enabled": true
               }
+            },
+            "server": {
+              "androidScheme": "https"
+            }
           }
           EOF
-
-          # 6. Generate standard gradle structure files
-          cat << 'EOF' > build.gradle
-          buildscript {
-              repositories { google() \n mavenCentral() }
-              dependencies { classpath 'com.android.tools.build:gradle:8.1.2' }
-          }
-          allprojects {
-              repositories { google() \n mavenCentral() }
-          }
-          EOF
-
-          cat << 'EOF' > app/build.gradle
-          plugins { id 'com.android.application' }
-          android {
-              namespace 'org.kenya50.game'
-              compileSdk 34
-              defaultConfig {
-                  applicationId "org.kenya50.game"
-                  minSdk 24
-                  targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
-              }
-              buildTypes {
-                  release {
-                      minifyEnabled false
-                  }
-              }
-          }
-          EOF
-
-          cat << 'EOF' > settings.gradle
-          include ':app'
-          EOF
-
-          # 7. Package everything up cleanly using Gradle
-          chmod +x /usr/share/gradle/bin/gradle || true
-          gradle wrapper --gradle-version 8.0
+          
+          # 5. Inject native android module and bundle wrapper framework
+          npx cap add android
+          npx cap sync android
+          
+          # 6. Execute direct gradle target compilation
+          cd android
           ./gradlew assembleDebug
 
       - name: Export Executable App
         uses: actions/upload-artifact@v4
         with:
           name: Kenya50-WordGame-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
