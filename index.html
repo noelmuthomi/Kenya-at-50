@@ -4,139 +4,111 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kenya at 50</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-main: #121212; --bg-card: rgba(255, 255, 255, 0.05);
-    --text-main: #FDF6E3; --text-muted: #A0A0A0;
-    --kenya-red: #C8102E; --kenya-green: #006600; --kenya-gold: #E6A817;
-    --font-scale: 1;
+    --primary: #C8102E; --secondary: #006600; --gold: #E6A817;
+    --bg: #0a0a0a; --card: rgba(255, 255, 255, 0.06);
+    --text: #ffffff; --font-scale: 1;
   }
-  [data-theme='light'] {
-    --bg-main: #f0f0f0; --bg-card: rgba(0, 0, 0, 0.05);
-    --text-main: #111; --text-muted: #555;
-  }
-  * { box-sizing: border-box; transition: background 0.3s, color 0.3s; font-size: calc(1rem * var(--font-scale)); }
-  body { font-family: 'Ubuntu', sans-serif; background-color: var(--bg-main); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
   
-  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity 0.3s; overflow-y: auto; }
-  .screen.active { opacity: 1; pointer-events: all; z-index: 10; }
+  body { 
+    font-family: 'Ubuntu', sans-serif; background: var(--bg); color: var(--text); 
+    margin: 0; overflow: hidden; height: 100vh;
+  }
 
-  .header { text-align: center; padding: 40px 20px 20px; }
-  .title { font-family: 'Bebas Neue', sans-serif; font-size: calc(4rem * var(--font-scale)); line-height: 1; }
-  .container { padding: 20px; max-width: 500px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 15px; }
+  /* Screen Transitions */
+  .screen { 
+    position: absolute; inset: 0; display: none; padding: 20px; 
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .screen.active { display: flex; flex-direction: column; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-  .btn { padding: 16px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; text-align: center; }
-  .btn-primary { background: var(--kenya-red); color: white; }
-  .btn-outline { background: var(--bg-card); border: 1px solid var(--text-muted); color: var(--text-main); }
-
-  /* Settings Styles */
-  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--bg-card); border-radius: 12px; }
+  .header { text-align: center; margin: 40px 0; }
+  h1 { font-size: 3rem; margin: 0; color: var(--primary); text-shadow: 0 0 20px rgba(200, 16, 46, 0.3); }
+  
+  .card { 
+    background: var(--card); border-radius: 24px; padding: 25px; 
+    backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 15px; transition: 0.3s;
+  }
+  
+  .btn { 
+    padding: 18px; border-radius: 16px; border: none; font-weight: 700; 
+    cursor: pointer; background: var(--primary); color: white; width: 100%;
+    margin-top: 10px; font-size: 1rem;
+  }
+  .btn-secondary { background: transparent; border: 2px solid var(--primary); }
 </style>
 </head>
 <body>
 
 <div class="screen active" id="view-setup">
-  <div class="header">
-    <div class="title">KENYA AT <span>50</span></div>
-  </div>
-  <div class="container">
-    <div id="team-list" style="display:flex; flex-direction:column; gap:10px;"></div>
-    <button class="btn btn-outline" onclick="addTeam()">+ Add Team</button>
-    <button class="btn btn-primary" onclick="startGame()">Start Tournament</button>
-    <button class="btn btn-outline" onclick="nav('view-settings')">⚙ Settings</button>
-  </div>
+    <div class="header"><h1>KENYA AT 50</h1></div>
+    <div class="card" id="team-list"></div>
+    <button class="btn" onclick="addTeam()">+ Add Team</button>
+    <button class="btn" onclick="startGame()">Start Tournament</button>
+    <button class="btn btn-secondary" onclick="nav('view-settings')">Settings</button>
 </div>
 
 <div class="screen" id="view-settings">
-  <div class="header"><h2>Settings</h2></div>
-  <div class="container">
-    <div class="setting-row">
-      <span>Theme</span>
-      <button class="btn btn-outline" onclick="toggleTheme()">Toggle Light/Dark</button>
+    <h2>Settings</h2>
+    <div class="card">
+        <p>Font Size</p>
+        <button class="btn" onclick="changeFont(-0.1)">Decrease</button>
+        <button class="btn" onclick="changeFont(0.1)">Increase</button>
     </div>
-    <div class="setting-row">
-      <span>Font Size</span>
-      <div style="display:flex; gap:10px;">
-        <button class="btn btn-outline" onclick="changeFont(-0.1)">A-</button>
-        <button class="btn btn-outline" onclick="changeFont(0.1)">A+</button>
-      </div>
-    </div>
-    <button class="btn btn-primary" onclick="nav('view-setup')">Back</button>
-  </div>
-</div>
-
-<div class="screen" id="view-scores">
-  <div class="header"><h2>Leaderboard</h2></div>
-  <div class="container">
-    <div id="score-container"></div>
-    <button class="btn btn-primary" onclick="startTurn()">Start Next Turn</button>
-    <button class="btn btn-outline" style="border-color:var(--kenya-red)" onclick="restartGame()">⟳ Restart Tournament</button>
-  </div>
+    <button class="btn" onclick="goHome()">Back Home</button>
 </div>
 
 <div class="screen" id="view-play">
-  <div class="header"><div id="play-team" style="font-size:2rem; font-weight:bold;"></div><div id="play-timer" style="font-size:4rem; color:var(--kenya-red);">50</div></div>
-  <div class="container"><div id="word-list"></div><button class="btn btn-primary" onclick="endTurnEarly()">Stop Timer</button></div>
+    <h2 id="play-team"></h2>
+    <div class="card" style="text-align:center;">
+        <div id="play-timer" style="font-size: 5rem; font-weight: bold;">50</div>
+    </div>
+    <button class="btn" onclick="endTurnEarly()">Finish Turn</button>
 </div>
 
 <script>
-let game = { teams: [{n:"Team 1", s:0}], curr: 0, round: 1, active: false };
+    let game = { teams: [{n:"Team 1", s:0}], curr: 0 };
 
-// --- Settings & UI Logic ---
-function toggleTheme() {
-  const t = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('theme', t);
-}
+    // Navigation and History Management
+    function nav(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        history.pushState({id: id}, null, '');
+    }
 
-function changeFont(delta) {
-  let val = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--font-scale')) + delta;
-  document.documentElement.style.setProperty('--font-scale', Math.max(0.8, Math.min(val, 1.5)));
-}
+    function goHome() { nav('view-setup'); }
 
-// --- Game Logic ---
-function nav(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+    // Trap the Back Button
+    window.addEventListener('popstate', (event) => {
+        nav('view-setup'); // Always return to Home
+        history.pushState({id: 'view-setup'}, null, '');
+    });
+    // Initialize history
+    history.pushState({id: 'view-setup'}, null, '');
 
-function restartGame() {
-  if(confirm("Are you sure you want to reset all scores?")) {
-    game.teams.forEach(t => t.s = 0);
-    game.curr = 0;
-    game.round = 1;
-    nav('view-setup');
-  }
-}
+    function changeFont(delta) {
+        let root = document.documentElement;
+        let scale = parseFloat(getComputedStyle(root).getPropertyValue('--font-scale')) + delta;
+        root.style.setProperty('--font-scale', Math.max(0.8, Math.min(scale, 1.5)));
+    }
 
-function startGame() { nav('view-scores'); renderScores(); }
+    function addTeam() { 
+        game.teams.push({n:`Team ${game.teams.length+1}`, s:0}); 
+        renderTeams(); 
+    }
 
-function addTeam() { if(game.teams.length < 6) { game.teams.push({n:`Team ${game.teams.length+1}`, s:0}); renderTeams(); } }
-function renderTeams() {
-    const c = document.getElementById('team-list');
-    c.innerHTML = game.teams.map((t,i) => `<input class="btn-outline" style="padding:10px" value="${t.n}" oninput="game.teams[${i}].n=this.value">`).join('');
-}
+    function renderTeams() {
+        document.getElementById('team-list').innerHTML = game.teams.map((t,i) => 
+            `<input style="width:100%; background:transparent; color:white; border:none; border-bottom:1px solid #555; padding:10px; font-size:1.2rem;" value="${t.n}">`).join('');
+    }
 
-function renderScores() {
-  const c = document.getElementById('score-container');
-  c.innerHTML = game.teams.map(t => `<div class="setting-row"><span>${t.n}</span><span>${t.s} pts</span></div>`).join('');
-}
-
-function startTurn() {
-    nav('view-play');
-    document.getElementById('play-team').innerText = game.teams[game.curr].n;
-    // ... rest of timer logic ...
-}
-
-function endTurnEarly() {
-    // Logic to add points
-    nav('view-scores');
-    renderScores();
-}
-
-// Initialize
-renderTeams();
+    function startGame() { nav('view-play'); }
+    
+    renderTeams();
 </script>
 </body>
 </html>
