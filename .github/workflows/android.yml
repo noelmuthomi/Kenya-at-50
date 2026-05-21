@@ -1,4 +1,4 @@
-name: Generate FOSS Android App
+name: Production Android Build
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 17 for Android
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
@@ -28,49 +28,41 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Compile Application
+      - name: Compile and Package Application
         run: |
           # 1. Prepare web root directory
-          mkdir www
+          mkdir -p www
           cp index.html www/index.html
+          [ -f "words.json" ] && cp words.json www/words.json
           
-          if [ -f "words.json" ]; then
-            cp words.json www/words.json
-          fi
-          
-          # 2. Setup Capacitor 6 framework parameters
-          # Added @capacitor/assets to devDependencies for icon generation
+          # 2. Setup project infrastructure
           cat << 'EOF' > package.json
           {
             "name": "kenya-at-50",
             "version": "1.0.0",
-            "description": "FOSS Word Game",
-            "main": "index.html",
-            "scripts": { "build": "echo 'Skipping node build'" },
-            "devDependencies": { 
+            "devDependencies": {
               "@capacitor/cli": "^6.0.0",
               "@capacitor/assets": "^3.0.0"
             },
-            "dependencies": { 
-              "@capacitor/android": "^6.0.0", 
-              "@capacitor/core": "^6.0.0" 
+            "dependencies": {
+              "@capacitor/android": "^6.0.0",
+              "@capacitor/core": "^6.0.0"
             }
           }
           EOF
           
-          # 3. Install core bridging modules
+          # 3. Install core dependencies
           npm install
           
-          # 4. Generate App Icons 
-          # This assumes your file is at assets/icon.png
+          # 4. Generate App Icons (Auto-generated from assets/icon.png)
           if [ -f "assets/icon.png" ]; then
-            echo "Generating app icons..."
+            echo "Generating adaptive icons..."
             npx capacitor-assets generate --android
           else
-            echo "Icon file not found at assets/icon.png. Skipping icon generation."
+            echo "Warning: assets/icon.png not found. Using default."
           fi
           
-          # 5. Configure Capacitor
+          # 5. Initialize Capacitor Config
           cat << 'EOF' > capacitor.config.json
           {
             "appId": "org.kenya50.game",
@@ -84,18 +76,16 @@ jobs:
           }
           EOF
           
-          # 6. Inject Android container
+          # 6. Inject native Android framework and sync assets
           npx cap add android
-          
-          # 7. Sync web assets (this pulls the generated icons into the android project)
           npx cap sync android
           
-          # 8. Build the final APK binary
+          # 7. Final Build
           cd android
           ./gradlew assembleDebug
 
       - name: Provide Downloadable APK
         uses: actions/upload-artifact@v4
         with:
-          name: Kenya50-Game-APK
+          name: KenyaAt50-Game-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
